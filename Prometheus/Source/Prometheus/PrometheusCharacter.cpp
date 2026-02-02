@@ -61,15 +61,15 @@ void APrometheusCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(MouseLookAction, ETriggerEvent::Triggered, this, &APrometheusCharacter::LookInput);
 
 		
-		EnhancedInputComponent->BindAction(MarkAction, ETriggerEvent::Triggered, this, &APrometheusCharacter::MarkInput);
+		EnhancedInputComponent->BindAction(MarkAction, ETriggerEvent::Started, this, &APrometheusCharacter::MarkInput);
 		
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Ongoing, this, &APrometheusCharacter::AimInput);
 		
-		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &APrometheusCharacter::AttackInput);
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &APrometheusCharacter::AttackInput);
 		
-		EnhancedInputComponent->BindAction(RestartAction, ETriggerEvent::Triggered, this, &APrometheusCharacter::RestartInput);
+		EnhancedInputComponent->BindAction(RestartAction, ETriggerEvent::Started, this, &APrometheusCharacter::RestartInput);
 		
-		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Triggered, this, &APrometheusCharacter::DashInput);
+		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &APrometheusCharacter::DashInput);
 
 		
 	}
