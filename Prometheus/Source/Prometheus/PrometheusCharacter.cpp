@@ -63,7 +63,7 @@ void APrometheusCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		
 		EnhancedInputComponent->BindAction(MarkAction, ETriggerEvent::Triggered, this, &APrometheusCharacter::MarkInput);
 		
-		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Triggered, this, &APrometheusCharacter::AimInput);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Ongoing, this, &APrometheusCharacter::AimInput);
 		
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &APrometheusCharacter::AttackInput);
 		
