@@ -4,12 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "MarkingInterface.h"
-#include "Components/ActorComponent.h"
+#include "Components/SphereComponent.h"
 #include "MarkableComponent.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class PROMETHEUS_API UMarkableComponent : public UActorComponent, public IMarkingInterface
+class PROMETHEUS_API UMarkableComponent : public USphereComponent, public IMarkingInterface
 {
 	GENERATED_BODY()
 

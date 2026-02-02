@@ -185,13 +185,19 @@ void APrometheusCharacter::LineTrace()
 		bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, Params);
 		//Show line trace visually
 		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 5.0f);
-			
+
+		//If hitting actor, check components to see if they implement marking, if so call function
 		if (bHit)
 		{
 			UActorComponent* HitComponent = Hit.GetComponent();
 			if (HitComponent && HitComponent->Implements<UMarkingInterface>())
 			{
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "LineTrace");
 				IMarkingInterface::Execute_OnMarked(HitComponent);
+			}
+			else
+			{
+				return;
 			}
 		}
 	}
