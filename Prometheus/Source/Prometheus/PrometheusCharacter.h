@@ -48,6 +48,24 @@ protected:
 	/** Mouse Look Input Action */
 	UPROPERTY(EditAnywhere, Category ="Input")
 	class UInputAction* MouseLookAction;
+
+
+	
+	UPROPERTY(EditAnywhere, Category="Input")
+	class UInputAction* MarkAction;
+
+	UPROPERTY(EditAnywhere, Category="Input")
+	class UInputAction* AimAction;
+
+	UPROPERTY(EditAnywhere, Category="Input")
+	class UInputAction* AttackAction;
+
+	UPROPERTY(EditAnywhere, Category="Input")
+	class UInputAction* RestartAction;
+
+	UPROPERTY(EditAnywhere, Category="Input")
+	class UInputAction* DashAction;
+	
 	
 public:
 	APrometheusCharacter();
@@ -75,6 +93,21 @@ protected:
 	/** Handles jump end inputs from either controls or UI interfaces */
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoJumpEnd();
+
+	UFUNCTION(BlueprintCallable, Category="Input")
+	void MarkInput();
+	
+	UFUNCTION(BlueprintCallable, Category="Input")
+	void AimInput();
+	
+	UFUNCTION(BlueprintCallable, Category="Input")
+	void AttackInput();
+	
+	UFUNCTION(BlueprintCallable, Category="Input")
+	void RestartInput();
+	
+	UFUNCTION(BlueprintCallable, Category="Input")
+	void DashInput();
 
 protected:
 

@@ -59,6 +59,8 @@ void APrometheusCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		// Looking/Aiming
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APrometheusCharacter::LookInput);
 		EnhancedInputComponent->BindAction(MouseLookAction, ETriggerEvent::Triggered, this, &APrometheusCharacter::LookInput);
+
+		
 	}
 	else
 	{
@@ -117,4 +119,29 @@ void APrometheusCharacter::DoJumpEnd()
 {
 	// pass StopJumping to the character
 	StopJumping();
+}
+
+void APrometheusCharacter::MarkInput()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Mark input" );
+}
+
+void APrometheusCharacter::AimInput()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Aim input" );
+}
+
+void APrometheusCharacter::AttackInput()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Attack input" );
+}
+
+void APrometheusCharacter::RestartInput()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Restart input" );
+}
+
+void APrometheusCharacter::DashInput()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash input" );
 }
