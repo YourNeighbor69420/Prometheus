@@ -8,6 +8,8 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "PlayerSubsystem.h"
+#include "MarkingInterface.h"
 #include "Prometheus.h"
 
 APrometheusCharacter::APrometheusCharacter()
@@ -135,6 +137,7 @@ void APrometheusCharacter::DoJumpEnd()
 void APrometheusCharacter::MarkInput()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Mark input" );
+	LineTrace();
 }
 
 void APrometheusCharacter::AimInput()
@@ -155,4 +158,41 @@ void APrometheusCharacter::RestartInput()
 void APrometheusCharacter::DashInput()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash input" );
+}
+
+void APrometheusCharacter::LineTrace()
+{
+	//Get Player Controller and Camera View Data
+	APlayerController* PC = Cast<APlayerController>(GetController());
+	if (PC)
+	{
+		FVector CameraLocation;
+		FRotator CameraRotation;
+
+		//Get Camera View
+		PC->GetPlayerViewPoint(CameraLocation, CameraRotation);
+
+		//Get camera location and rotation and make line trace X units away
+		FVector Start = CameraLocation;
+		FVector End = Start + (CameraRotation.Vector() * 10000.f);
+
+		//Set collision to not hit self
+		FHitResult Hit;
+		FCollisionQueryParams Params;
+		Params.AddIgnoredActor(this);
+
+		//Line trace and return data as Hit
+		bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, Params);
+		//Show line trace visually
+		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 5.0f);
+			
+		if (bHit)
+		{
+			UActorComponent* HitComponent = Hit.GetComponent();
+			if (HitComponent && HitComponent->Implements<UMarkingInterface>())
+			{
+				IMarkingInterface::Execute_OnMarked(HitComponent);
+			}
+		}
+	}
 }

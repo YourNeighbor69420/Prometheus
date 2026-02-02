@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
+
+
 #include "PrometheusCharacter.generated.h"
 
 class UInputComponent;
@@ -108,6 +110,8 @@ protected:
 	
 	UFUNCTION(BlueprintCallable, Category="Input")
 	void DashInput();
+
+	void LineTrace();
 
 protected:
 
