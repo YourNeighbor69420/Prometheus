@@ -3,6 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MarkableComponent.h"
+#include "PlayerSubsystem.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 
@@ -111,7 +114,12 @@ protected:
 	UFUNCTION(BlueprintCallable, Category="Input")
 	void DashInput();
 
-	void LineTrace();
+	UPROPERTY()
+	UPlayerSubsystem* PlayerSubsystem;
+	
+	FHitResult LineTrace();
+
+	TWeakObjectPtr<UMarkableComponent> CurrentMarkedTarget;
 
 protected:
 

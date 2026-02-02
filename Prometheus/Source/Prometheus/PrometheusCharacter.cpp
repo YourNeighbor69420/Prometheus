@@ -137,7 +137,15 @@ void APrometheusCharacter::DoJumpEnd()
 void APrometheusCharacter::MarkInput()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Mark input" );
-	LineTrace();
+	FHitResult Hit = LineTrace();
+
+	if (Hit.bBlockingHit)
+	{
+		if (UMarkableComponent* HitComponent = Cast<UMarkableComponent>(Hit.GetComponent()))
+		{
+			PlayerSubsystem->SetMarkedTarget(HitComponent);
+		}
+	}
 }
 
 void APrometheusCharacter::AimInput()
@@ -160,8 +168,10 @@ void APrometheusCharacter::DashInput()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash input" );
 }
 
-void APrometheusCharacter::LineTrace()
+FHitResult APrometheusCharacter::LineTrace()
 {
+	FHitResult Hit;
+	
 	//Get Player Controller and Camera View Data
 	APlayerController* PC = Cast<APlayerController>(GetController());
 	if (PC)
@@ -177,7 +187,6 @@ void APrometheusCharacter::LineTrace()
 		FVector End = Start + (CameraRotation.Vector() * 10000.f);
 
 		//Set collision to not hit self
-		FHitResult Hit;
 		FCollisionQueryParams Params;
 		Params.AddIgnoredActor(this);
 
@@ -195,10 +204,8 @@ void APrometheusCharacter::LineTrace()
 				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "LineTrace");
 				IMarkingInterface::Execute_OnMarked(HitComponent);
 			}
-			else
-			{
-				return;
-			}
 		}
 	}
+	
+	return Hit;
 }

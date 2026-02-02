@@ -14,7 +14,18 @@ void UPlayerSubsystem::Deinitialize()
 	Super::Deinitialize();
 }
 
-void UPlayerSubsystem::Mark()
+void UPlayerSubsystem::SetMarkedTarget(UMarkableComponent* NewMarkedTarget)
 {
-	
+	if (NewMarkedTarget)
+	{
+		//ISSUE CRASHES GAME 
+		//CurrentMarkedTarget = NewMarkedTarget;
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, "UPlayerSubsystem::SetMarkedTarget");
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, "BADDDDD");
+
+	}
 }
+

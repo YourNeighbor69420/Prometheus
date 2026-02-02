@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MarkableComponent.h"
 #include "Subsystems/LocalPlayerSubsystem.h"
 #include "PlayerSubsystem.generated.h"
 
@@ -19,6 +20,11 @@ public:
 
 	virtual void Deinitialize() override;
 
-	UFUNCTION(BlueprintCallable, category = "Player Mechanics")
-	void Mark();
+	UFUNCTION(BlueprintCallable)
+	void SetMarkedTarget(UMarkableComponent* NewMarkedTarget);
+
+	
+	
+private:
+	TWeakObjectPtr<UMarkableComponent> CurrentMarkedTarget;
 };
