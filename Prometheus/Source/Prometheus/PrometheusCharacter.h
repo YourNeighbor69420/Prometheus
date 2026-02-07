@@ -76,7 +76,8 @@ public:
 	APrometheusCharacter();
 
 protected:
-
+	void BeginPlay() override;
+	
 	/** Called from Input Actions for movement input */
 	void MoveInput(const FInputActionValue& Value);
 

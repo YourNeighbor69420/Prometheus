@@ -46,6 +46,22 @@ APrometheusCharacter::APrometheusCharacter()
 	GetCharacterMovement()->AirControl = 0.5f;
 }
 
+void APrometheusCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	{
+		if (ULocalPlayer* LocalPlayer = PC->GetLocalPlayer())
+		{
+			PlayerSubsystem = LocalPlayer->GetSubsystem<UPlayerSubsystem>();
+		}
+	}
+	/*if (PlayerSubsystem)
+	{
+		UE_LOG(LogTemp, Display, TEXT("Player Subsystem Created"));
+	}*/
+}
+
 void APrometheusCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {	
 	// Set up action bindings
@@ -143,7 +159,11 @@ void APrometheusCharacter::MarkInput()
 	{
 		if (UMarkableComponent* HitComponent = Cast<UMarkableComponent>(Hit.GetComponent()))
 		{
-			PlayerSubsystem->SetMarkedTarget(HitComponent);
+			if (PlayerSubsystem)
+			{
+				PlayerSubsystem->SetMarkedTarget(HitComponent);
+
+			}
 		}
 	}
 }
