@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "MarkingInterface.h"
 #include "Components/SphereComponent.h"
+#include "Components/WidgetComponent.h"
+
 #include "MarkableComponent.generated.h"
 
 
@@ -26,6 +28,12 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	virtual void OnMarked_Implementation() override;
+	virtual void OnUnMarked_Implementation() override;
 	virtual void OnDashHit_Implementation() override;
-	
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Visuals")
+	UWidgetComponent* MarkWidget;
+
+	UPROPERTY(EditAnywhere, Category = "Visuals")
+	float SpinSpeed = 90.f;
 };

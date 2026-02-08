@@ -19,15 +19,22 @@ void UPlayerSubsystem::Deinitialize()
 void UPlayerSubsystem::SetMarkedTarget(UMarkableComponent* NewMarkedTarget)
 {
 	UE_LOG(LogTemp, Error, TEXT("Subsystem Address: %p"), this);
+
+	if (CurrentMarkedTarget.IsValid())
+	{
+		IMarkingInterface::Execute_OnUnMarked(CurrentMarkedTarget.Get());
+	}
+
+	CurrentMarkedTarget = NewMarkedTarget;
+	
 	if (NewMarkedTarget)
 	{
-		CurrentMarkedTarget = NewMarkedTarget;
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, "UPlayerSubsystem::SetMarkedTarget");
+		IMarkingInterface::Execute_OnMarked(NewMarkedTarget);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, FString::Printf(TEXT("Target Successfully marked: %s"), *NewMarkedTarget->GetName()));
 	}
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, "BADDDDD");
-
 	}
 
 }
