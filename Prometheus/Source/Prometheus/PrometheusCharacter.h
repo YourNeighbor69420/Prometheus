@@ -77,6 +77,8 @@ public:
 
 protected:
 	void BeginPlay() override;
+
+	void Tick(float DeltaTime) override;
 	
 	/** Called from Input Actions for movement input */
 	void MoveInput(const FInputActionValue& Value);
@@ -126,6 +128,9 @@ protected:
 
 	/** Set up input action bindings */
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
+
+	UPROPERTY(EditAnywhere, Category="Movement")
+	float BaseSpeed = 500.f;
 	
 
 public:

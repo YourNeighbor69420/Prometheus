@@ -62,6 +62,15 @@ void APrometheusCharacter::BeginPlay()
 	}*/
 }
 
+void APrometheusCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	const FVector Direction = FVector::ForwardVector;
+
+	AddMovementInput(Direction, 1.0f);
+}
+
 void APrometheusCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {	
 	// Set up action bindings
