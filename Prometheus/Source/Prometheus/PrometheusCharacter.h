@@ -130,7 +130,12 @@ protected:
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 
 	UPROPERTY(EditAnywhere, Category="Movement")
-	float BaseSpeed = 500.f;
+	float MaxSpeed = 20000.f;
+
+	void DashToTarget(UMarkableComponent* Target);
+
+	UPROPERTY(EditAnywhere, Category="Movement")
+	FVector ViLocity;
 	
 
 public:
@@ -142,4 +147,6 @@ public:
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
 };
+
+
 

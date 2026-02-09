@@ -56,19 +56,31 @@ void APrometheusCharacter::BeginPlay()
 			PlayerSubsystem = LocalPlayer->GetSubsystem<UPlayerSubsystem>();
 		}
 	}
+	
 	/*if (PlayerSubsystem)
 	{
 		UE_LOG(LogTemp, Display, TEXT("Player Subsystem Created"));
 	}*/
+
+	if (UCharacterMovementComponent* MoveComp =  GetCharacterMovement())
+	{
+		MoveComp->MaxFlySpeed = MaxSpeed;
+	}
+	LaunchCharacter(GetActorForwardVector() * 4000.f, true, true );
 }
 
 void APrometheusCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	const FVector Direction = FVector::ForwardVector;
+	const FVector Direction = GetActorForwardVector();
 
-	AddMovementInput(Direction, 1.0f);
+	if (UCharacterMovementComponent* MoveComp =  GetCharacterMovement())
+	{
+		ViLocity = MoveComp->Velocity;
+	}
+
+	//AddMovementInput(Direction, 1.0f);
 }
 
 void APrometheusCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -81,7 +93,7 @@ void APrometheusCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &APrometheusCharacter::DoJumpEnd);
 
 		// Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APrometheusCharacter::MoveInput);
+		//EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APrometheusCharacter::MoveInput);
 
 		// Looking/Aiming
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APrometheusCharacter::LookInput);
@@ -97,8 +109,6 @@ void APrometheusCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(RestartAction, ETriggerEvent::Started, this, &APrometheusCharacter::RestartInput);
 		
 		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &APrometheusCharacter::DashInput);
-
-		
 	}
 	else
 	{
@@ -238,3 +248,7 @@ FHitResult APrometheusCharacter::LineTrace()
 	
 	return Hit;
 }
+ void APrometheusCharacter::DashToTarget(UMarkableComponent* Target)
+ {
+	 
+ }
