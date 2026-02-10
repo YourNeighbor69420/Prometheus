@@ -132,6 +132,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Movement")
 	float MaxSpeed = 20000.f;
 
+	UPROPERTY(EditAnywhere, Category="Movement")
+	float InitialLaunchSpeed = 10000.f;
+
 	void DashToTarget(UMarkableComponent* Target);
 
 	UPROPERTY(EditAnywhere, Category="Movement")

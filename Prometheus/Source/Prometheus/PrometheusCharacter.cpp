@@ -66,7 +66,7 @@ void APrometheusCharacter::BeginPlay()
 	{
 		MoveComp->MaxFlySpeed = MaxSpeed;
 	}
-	LaunchCharacter(GetActorForwardVector() * 4000.f, true, true );
+	LaunchCharacter(GetActorForwardVector() * InitialLaunchSpeed, true, true );
 }
 
 void APrometheusCharacter::Tick(float DeltaTime)
@@ -205,6 +205,13 @@ void APrometheusCharacter::RestartInput()
 void APrometheusCharacter::DashInput()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash input" );
+
+	UMarkableComponent* MarkedTarget = PlayerSubsystem ? PlayerSubsystem->GetMarkedTarget(): nullptr;
+
+	if (MarkedTarget)
+	{
+		DashToTarget(MarkedTarget);
+	}
 }
 
 FHitResult APrometheusCharacter::LineTrace()
@@ -250,5 +257,16 @@ FHitResult APrometheusCharacter::LineTrace()
 }
  void APrometheusCharacter::DashToTarget(UMarkableComponent* Target)
  {
-	 
+	 if (!Target) return;
+
+	FVector Start = GetActorLocation();
+	FVector End = Target->GetComponentLocation();
+	FVector Direction = (End - Start).GetSafeNormal();
+
+	SetActorRotation(Direction.Rotation());
+
+	UCharacterMovementComponent* MoveComp = GetCharacterMovement();
+
+	MoveComp->Velocity = Direction * 1000.f;
+	
  }

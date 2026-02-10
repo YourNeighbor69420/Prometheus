@@ -39,3 +39,10 @@ void UPlayerSubsystem::SetMarkedTarget(UMarkableComponent* NewMarkedTarget)
 
 }
 
+UMarkableComponent* UPlayerSubsystem::GetMarkedTarget() const
+{
+	return CurrentMarkedTarget.Get();
+}
+
+
+
