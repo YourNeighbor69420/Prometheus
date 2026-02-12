@@ -11,6 +11,7 @@
 #include "PlayerSubsystem.h"
 #include "MarkingInterface.h"
 #include "Prometheus.h"
+#include "Kismet/GameplayStatics.h"
 
 APrometheusCharacter::APrometheusCharacter()
 {
@@ -102,7 +103,8 @@ void APrometheusCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		
 		EnhancedInputComponent->BindAction(MarkAction, ETriggerEvent::Started, this, &APrometheusCharacter::MarkInput);
 		
-		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Ongoing, this, &APrometheusCharacter::AimInput);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &APrometheusCharacter::AimInput);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &APrometheusCharacter::AimReleaseInput);
 		
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &APrometheusCharacter::AttackInput);
 		
@@ -190,6 +192,14 @@ void APrometheusCharacter::MarkInput()
 void APrometheusCharacter::AimInput()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Aim input" );
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.2f);
+}
+
+void APrometheusCharacter::AimReleaseInput()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Aim input" );
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
+
 }
 
 void APrometheusCharacter::AttackInput()

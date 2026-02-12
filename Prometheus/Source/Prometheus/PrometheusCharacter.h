@@ -63,6 +63,9 @@ protected:
 	class UInputAction* AimAction;
 
 	UPROPERTY(EditAnywhere, Category="Input")
+	class UInputAction* AimReleaseAction;
+
+	UPROPERTY(EditAnywhere, Category="Input")
 	class UInputAction* AttackAction;
 
 	UPROPERTY(EditAnywhere, Category="Input")
@@ -107,6 +110,9 @@ protected:
 	
 	UFUNCTION(BlueprintCallable, Category="Input")
 	void AimInput();
+
+	UFUNCTION(BlueprintCallable, Category="Input")
+	void AimReleaseInput();
 	
 	UFUNCTION(BlueprintCallable, Category="Input")
 	void AttackInput();
