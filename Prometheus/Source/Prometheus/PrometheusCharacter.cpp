@@ -68,6 +68,9 @@ void APrometheusCharacter::BeginPlay()
 		MoveComp->MaxFlySpeed = MaxSpeed;
 	}
 	LaunchCharacter(GetActorForwardVector() * InitialLaunchSpeed, true, true );
+
+	GetFirstPersonCameraComponent()->FieldOfView = DefaultFOV;
+	DesiredFOV = DefaultFOV;
 }
 
 void APrometheusCharacter::Tick(float DeltaTime)
@@ -80,8 +83,20 @@ void APrometheusCharacter::Tick(float DeltaTime)
 	{
 		ViLocity = MoveComp->Velocity;
 	}
-
+	
 	//AddMovementInput(Direction, 1.0f);
+	float CurrentFOV = GetFirstPersonCameraComponent()->FieldOfView;
+	
+	if (FMath::IsNearlyEqual(CurrentFOV, DesiredFOV, 0.1f))
+	{
+		return;
+	}
+
+	float TimeDilation = UGameplayStatics::GetGlobalTimeDilation(this);
+	float RealDeltaTime = DeltaTime/TimeDilation;
+	
+	float NewFOV = FMath::FInterpTo(CurrentFOV, DesiredFOV, RealDeltaTime, 10.f);
+	GetFirstPersonCameraComponent()->SetFieldOfView(NewFOV);
 }
 
 void APrometheusCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -173,6 +188,7 @@ void APrometheusCharacter::DoJumpEnd()
 
 void APrometheusCharacter::MarkInput()
 {
+	//Check if the line trace hit a markable component and sets it as the current marked target
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Mark input" );
 	FHitResult Hit = LineTrace();
 
@@ -191,15 +207,22 @@ void APrometheusCharacter::MarkInput()
 
 void APrometheusCharacter::AimInput()
 {
+	//Slow down the worlds time and change the FOV
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Aim input" );
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.2f);
+	DesiredFOV = SlowMotionFOV;
+	//GetFirstPersonCameraComponent()->FieldOfView = SlowMotionFOV;
 }
 
 void APrometheusCharacter::AimReleaseInput()
 {
+	//Sets the worlds time and FOV back to normal
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Aim input" );
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
+	DesiredFOV = DefaultFOV;
+	//GetFirstPersonCameraComponent()->FieldOfView = DefaultFOV;
 
+	
 }
 
 void APrometheusCharacter::AttackInput()
@@ -269,6 +292,7 @@ FHitResult APrometheusCharacter::LineTrace()
  {
 	 if (!Target) return;
 
+	//If theres no target to dash to, dont. Otherwise find the distance between actor and component and change direction to face it
 	FVector Start = GetActorLocation();
 	FVector End = Target->GetComponentLocation();
 	FVector Direction = (End - Start).GetSafeNormal();

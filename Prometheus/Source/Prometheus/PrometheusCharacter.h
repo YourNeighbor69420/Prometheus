@@ -105,29 +105,37 @@ protected:
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoJumpEnd();
 
+	// Handles the player marking actors
 	UFUNCTION(BlueprintCallable, Category="Input")
 	void MarkInput();
-	
+
+	//Handles the slow motion aiming
 	UFUNCTION(BlueprintCallable, Category="Input")
 	void AimInput();
 
+	//Knows when the aim is released
 	UFUNCTION(BlueprintCallable, Category="Input")
 	void AimReleaseInput();
-	
+
+	//Handles the players attack
 	UFUNCTION(BlueprintCallable, Category="Input")
 	void AttackInput();
-	
+
+	//Handles the level restart
 	UFUNCTION(BlueprintCallable, Category="Input")
 	void RestartInput();
-	
+
+	//Handles the players dashes
 	UFUNCTION(BlueprintCallable, Category="Input")
 	void DashInput();
-
+	
 	UPROPERTY()
 	UPlayerSubsystem* PlayerSubsystem;
-	
+
+	//Returns whatever the player selects/clicks
 	FHitResult LineTrace();
 
+	//What is currently marked
 	TWeakObjectPtr<UMarkableComponent> CurrentMarkedTarget;
 
 protected:
@@ -135,17 +143,33 @@ protected:
 	/** Set up input action bindings */
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 
+	//Max Player speed
 	UPROPERTY(EditAnywhere, Category="Movement")
 	float MaxSpeed = 20000.f;
 
+	//How fast the player is sent out at the beginning of the level
 	UPROPERTY(EditAnywhere, Category="Movement")
 	float InitialLaunchSpeed = 10000.f;
 
 	void DashToTarget(UMarkableComponent* Target);
 
+	//Custom speed
 	UPROPERTY(EditAnywhere, Category="Movement")
 	FVector ViLocity;
-	
+	//Custom air resistance
+	UPROPERTY(EditAnywhere, Category="Movement")
+	float Drag = 2.f;
+
+	//What we currently want the fov to be
+	float DesiredFOV;
+
+	//The normal FOV
+	UPROPERTY(EditAnywhere, Category="Camera")
+	float DefaultFOV = 100.f;
+
+	//The aiming FOV
+	UPROPERTY(EditAnywhere, Category="Camera")
+	float SlowMotionFOV = 60.f;
 
 public:
 
