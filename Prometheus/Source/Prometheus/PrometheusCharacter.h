@@ -149,7 +149,7 @@ protected:
 
 	//How fast the player is sent out at the beginning of the level
 	UPROPERTY(EditAnywhere, Category="Movement")
-	float InitialLaunchSpeed = 10000.f;
+	float InitialLaunchSpeed = 5000.f;
 
 	void DashToTarget(UMarkableComponent* Target);
 
@@ -158,7 +158,7 @@ protected:
 	FVector ViLocity;
 	//Custom air resistance
 	UPROPERTY(EditAnywhere, Category="Movement")
-	float Drag = 2.f;
+	float Drag = 0.5f;
 
 	//What we currently want the fov to be
 	float DesiredFOV;

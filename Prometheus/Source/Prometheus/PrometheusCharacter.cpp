@@ -63,12 +63,16 @@ void APrometheusCharacter::BeginPlay()
 		UE_LOG(LogTemp, Display, TEXT("Player Subsystem Created"));
 	}*/
 
-	if (UCharacterMovementComponent* MoveComp =  GetCharacterMovement())
+	/*if (UCharacterMovementComponent* MoveComp =  GetCharacterMovement())
 	{
 		MoveComp->MaxFlySpeed = MaxSpeed;
 	}
-	LaunchCharacter(GetActorForwardVector() * InitialLaunchSpeed, true, true );
+	LaunchCharacter(GetActorForwardVector() * InitialLaunchSpeed, true, true );*/
 
+	GetCharacterMovement()->Deactivate();
+	ViLocity = GetActorForwardVector() * InitialLaunchSpeed;
+
+	//Set FOV
 	GetFirstPersonCameraComponent()->FieldOfView = DefaultFOV;
 	DesiredFOV = DefaultFOV;
 }
@@ -77,14 +81,38 @@ void APrometheusCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	const FVector Direction = GetActorForwardVector();
+	/*const FVector Direction = GetActorForwardVector();
 
 	if (UCharacterMovementComponent* MoveComp =  GetCharacterMovement())
 	{
 		ViLocity = MoveComp->Velocity;
-	}
+	}*/
 	
 	//AddMovementInput(Direction, 1.0f);
+
+	FString DebugMsg = FString::Printf(TEXT("Velocity: %s | Speed: %f"), 
+			*ViLocity.ToString(), 
+			ViLocity.Size());
+            
+	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, DebugMsg);
+	
+	if (!ViLocity.IsNearlyZero())
+	{
+		ViLocity = ViLocity * (1.f - (Drag * DeltaTime));
+
+		if (ViLocity.SizeSquared() < 100.f)
+		{
+			ViLocity = FVector::ZeroVector;
+		}
+	}
+
+	if (!ViLocity.IsNearlyZero())
+	{
+		FVector DesiredMove = ViLocity * DeltaTime;
+		AddActorWorldOffset(DesiredMove, true);
+		
+	}
+	
 	float CurrentFOV = GetFirstPersonCameraComponent()->FieldOfView;
 	
 	if (FMath::IsNearlyEqual(CurrentFOV, DesiredFOV, 0.1f))
