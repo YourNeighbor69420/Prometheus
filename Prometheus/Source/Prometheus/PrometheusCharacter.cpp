@@ -100,10 +100,10 @@ void APrometheusCharacter::Tick(float DeltaTime)
 	{
 		ViLocity = ViLocity * (1.f - (Drag * DeltaTime));
 
-		if (ViLocity.SizeSquared() < 100.f)
+		/*if (ViLocity.SizeSquared() < 1000.f)
 		{
 			ViLocity = FVector::ZeroVector;
-		}
+		}*/
 	}
 
 	if (!ViLocity.IsNearlyZero())
@@ -121,7 +121,17 @@ void APrometheusCharacter::Tick(float DeltaTime)
 	}
 
 	float TimeDilation = UGameplayStatics::GetGlobalTimeDilation(this);
-	float RealDeltaTime = DeltaTime/TimeDilation;
+	float RealDeltaTime;
+
+	if (TimeDilation < 0.9f)
+	{
+		RealDeltaTime = 0.02f;
+	}
+	else
+	{
+		RealDeltaTime = DeltaTime;
+	}
+
 	
 	float NewFOV = FMath::FInterpTo(CurrentFOV, DesiredFOV, RealDeltaTime, 10.f);
 	GetFirstPersonCameraComponent()->SetFieldOfView(NewFOV);
@@ -237,7 +247,7 @@ void APrometheusCharacter::AimInput()
 {
 	//Slow down the worlds time and change the FOV
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Aim input" );
-	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.2f);
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), TimeDilationFactor);
 	DesiredFOV = SlowMotionFOV;
 	//GetFirstPersonCameraComponent()->FieldOfView = SlowMotionFOV;
 }
@@ -324,11 +334,13 @@ FHitResult APrometheusCharacter::LineTrace()
 	FVector Start = GetActorLocation();
 	FVector End = Target->GetComponentLocation();
 	FVector Direction = (End - Start).GetSafeNormal();
-
+	
 	SetActorRotation(Direction.Rotation());
 
+	ViLocity = Direction * ViLocity.Size();
+	/*
 	UCharacterMovementComponent* MoveComp = GetCharacterMovement();
 
-	MoveComp->Velocity = Direction * 1000.f;
+	MoveComp->Velocity = Direction * 1000.f;*/
 	
  }

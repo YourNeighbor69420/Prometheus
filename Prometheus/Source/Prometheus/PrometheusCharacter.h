@@ -160,6 +160,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Movement")
 	float Drag = 0.5f;
 
+	UPROPERTY(EditAnywhere, Category="Slow Motion")
+	float TimeDilationFactor = 0.1f;
+
 	//What we currently want the fov to be
 	float DesiredFOV;
 
