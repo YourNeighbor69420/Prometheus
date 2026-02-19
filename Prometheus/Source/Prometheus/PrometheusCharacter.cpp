@@ -75,6 +75,8 @@ void APrometheusCharacter::BeginPlay()
 	//Set FOV
 	GetFirstPersonCameraComponent()->FieldOfView = DefaultFOV;
 	DesiredFOV = DefaultFOV;
+
+	CurrentSensitivity = DefaultSensitivity;
 }
 
 void APrometheusCharacter::Tick(float DeltaTime)
@@ -188,7 +190,7 @@ void APrometheusCharacter::LookInput(const FInputActionValue& Value)
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
 	// pass the axis values to the aim input
-	DoAim(LookAxisVector.X, LookAxisVector.Y);
+	DoAim(LookAxisVector.X * CurrentSensitivity, LookAxisVector.Y * CurrentSensitivity);
 
 }
 
@@ -249,6 +251,7 @@ void APrometheusCharacter::AimInput()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Aim input" );
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), TimeDilationFactor);
 	DesiredFOV = SlowMotionFOV;
+	CurrentSensitivity = AimSensitivity;
 	//GetFirstPersonCameraComponent()->FieldOfView = SlowMotionFOV;
 }
 
@@ -258,6 +261,7 @@ void APrometheusCharacter::AimReleaseInput()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Aim input" );
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
 	DesiredFOV = DefaultFOV;
+	CurrentSensitivity = DefaultSensitivity;
 	//GetFirstPersonCameraComponent()->FieldOfView = DefaultFOV;
 
 	

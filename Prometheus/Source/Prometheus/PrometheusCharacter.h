@@ -174,6 +174,14 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Camera")
 	float SlowMotionFOV = 60.f;
 
+	float CurrentSensitivity = 1.f;
+
+	UPROPERTY(EditAnywhere, Category="Camera")
+	float DefaultSensitivity = 1.f;
+
+	UPROPERTY(EditAnywhere, Category="Camera")
+	float AimSensitivity = 0.4f;
+
 public:
 
 	/** Returns the first person mesh **/
