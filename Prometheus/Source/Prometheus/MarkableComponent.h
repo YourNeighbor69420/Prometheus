@@ -29,7 +29,7 @@ public:
 
 	virtual void OnMarked_Implementation() override;
 	virtual void OnUnMarked_Implementation() override;
-	virtual void OnDashHit_Implementation() override;
+	virtual void OnAttackHit_Implementation() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Visuals")
 	UWidgetComponent* MarkWidget;

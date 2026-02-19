@@ -121,6 +121,10 @@ protected:
 	UFUNCTION(BlueprintCallable, Category="Input")
 	void AttackInput();
 
+	//Handles the players attack
+	UFUNCTION(BlueprintCallable, Category="Input")
+	void Attack(UMarkableComponent* Target);
+
 	//Handles the level restart
 	UFUNCTION(BlueprintCallable, Category="Input")
 	void RestartInput();
@@ -135,8 +139,10 @@ protected:
 	//Returns whatever the player selects/clicks
 	FHitResult LineTrace();
 
+	void AttackTeleport(UMarkableComponent* Target);
+
 	//What is currently marked
-	TWeakObjectPtr<UMarkableComponent> CurrentMarkedTarget;
+	//TWeakObjectPtr<UMarkableComponent> CurrentMarkedTarget;
 
 protected:
 
@@ -181,6 +187,14 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Camera")
 	float AimSensitivity = 0.4f;
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	float DistanceToAttack = 300.f;
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	float TeleportDistance = 200.f;
+
+	
 
 public:
 

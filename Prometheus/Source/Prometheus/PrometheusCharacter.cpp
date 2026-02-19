@@ -239,7 +239,6 @@ void APrometheusCharacter::MarkInput()
 			if (PlayerSubsystem)
 			{
 				PlayerSubsystem->SetMarkedTarget(HitComponent);
-
 			}
 		}
 	}
@@ -270,6 +269,19 @@ void APrometheusCharacter::AimReleaseInput()
 void APrometheusCharacter::AttackInput()
 {
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Attack input" );
+	if (PlayerSubsystem->GetMarkedTarget())
+	{
+		AttackTeleport(PlayerSubsystem->GetMarkedTarget());
+		
+	}
+	
+	
+	
+}
+
+void APrometheusCharacter::Attack(UMarkableComponent* Target)
+{
+	AttackTeleport(Target);
 }
 
 void APrometheusCharacter::RestartInput()
@@ -330,7 +342,25 @@ FHitResult APrometheusCharacter::LineTrace()
 	
 	return Hit;
 }
- void APrometheusCharacter::DashToTarget(UMarkableComponent* Target)
+
+void APrometheusCharacter::AttackTeleport(UMarkableComponent* Target)
+{
+	FVector PlayerLocation = GetActorLocation();
+	FVector TargetLocation = Target->GetComponentLocation();
+	float Distance = FVector::Dist(PlayerLocation, TargetLocation);
+
+	if (Distance < DistanceToAttack)
+	{
+		FVector ApproachDirection = (TargetLocation - PlayerLocation).GetSafeNormal();
+		FVector TeleportDestination = TargetLocation + (ApproachDirection * Distance);
+		SetActorLocation(TeleportDestination, false);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f , FColor::Emerald, "teleported");
+	}
+
+	
+}
+
+void APrometheusCharacter::DashToTarget(UMarkableComponent* Target)
  {
 	 if (!Target) return;
 

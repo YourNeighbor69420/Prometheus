@@ -30,5 +30,8 @@ public:
 	void OnUnMarked();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
-	void OnDashHit();
+	void OnAttackHit();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
+	float GetSpeedReward();
 };

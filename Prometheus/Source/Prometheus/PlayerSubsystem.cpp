@@ -23,6 +23,7 @@ void UPlayerSubsystem::SetMarkedTarget(UMarkableComponent* NewMarkedTarget)
 	if (CurrentMarkedTarget.IsValid())
 	{
 		IMarkingInterface::Execute_OnUnMarked(CurrentMarkedTarget.Get());
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow,"this does work");
 	}
 
 	CurrentMarkedTarget = NewMarkedTarget;

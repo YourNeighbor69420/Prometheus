@@ -47,23 +47,24 @@ void UMarkableComponent::OnMarked_Implementation()
 {
 	IMarkingInterface::OnMarked_Implementation();
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, "Marked Component");
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, "Marked Component");
 	MarkWidget->SetVisibility(true);
 }
 
 void UMarkableComponent::OnUnMarked_Implementation()
 {
 	IMarkingInterface::OnUnMarked_Implementation();
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, "UnMarked Component");
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, "UnMarked Component");
 	MarkWidget->SetVisibility(false);
 
 
 }
 
-void UMarkableComponent::OnDashHit_Implementation()
+void UMarkableComponent::OnAttackHit_Implementation()
 {
-	IMarkingInterface::OnDashHit_Implementation();
-
+	IMarkingInterface::OnAttackHit_Implementation();
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Hit Enemy");
 }
+
+
 
