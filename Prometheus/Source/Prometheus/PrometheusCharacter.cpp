@@ -345,16 +345,28 @@ FHitResult APrometheusCharacter::LineTrace()
 
 void APrometheusCharacter::AttackTeleport(UMarkableComponent* Target)
 {
+	//Get the distance between the player and the marked target and check if we are close enough to attack/teleport
 	FVector PlayerLocation = GetActorLocation();
 	FVector TargetLocation = Target->GetComponentLocation();
 	float Distance = FVector::Dist(PlayerLocation, TargetLocation);
 
 	if (Distance < DistanceToAttack)
 	{
+		//Get the direction from the player to the enemy
 		FVector ApproachDirection = (TargetLocation - PlayerLocation).GetSafeNormal();
-		FVector TeleportDestination = TargetLocation + (ApproachDirection * Distance);
-		SetActorLocation(TeleportDestination, false);
+		//Start at the enemy and teleport the teleport distance
+		FVector TeleportDestination = TargetLocation + (ApproachDirection * TeleportDistance);
+		AActor* EnemyActor = Target->GetOwner();
+
+		//Ignore the enemy actor when teleporting as to not collide with them
+		GetCapsuleComponent()->IgnoreActorWhenMoving(EnemyActor, true);
+		//Teleport to the destination we have set while checking if we pass through anything
+		SetActorLocation(TeleportDestination, true);
 		GEngine->AddOnScreenDebugMessage(-1, 5.f , FColor::Emerald, "teleported");
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, FString::Printf(TEXT("No collision on: %s"), *Target->GetOwner()->GetName()));
+		//Re-enable collision on the player
+		GetCapsuleComponent()->IgnoreActorWhenMoving(EnemyActor, false);
+
 	}
 
 	
@@ -368,9 +380,9 @@ void APrometheusCharacter::DashToTarget(UMarkableComponent* Target)
 	FVector Start = GetActorLocation();
 	FVector End = Target->GetComponentLocation();
 	FVector Direction = (End - Start).GetSafeNormal();
-	
+	//Face the actor in the correct direction
 	SetActorRotation(Direction.Rotation());
-
+	//keep the same speed but change where we are directed
 	ViLocity = Direction * ViLocity.Size();
 	/*
 	UCharacterMovementComponent* MoveComp = GetCharacterMovement();

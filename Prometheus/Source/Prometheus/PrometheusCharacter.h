@@ -139,6 +139,7 @@ protected:
 	//Returns whatever the player selects/clicks
 	FHitResult LineTrace();
 
+	//The teleport when attacking
 	void AttackTeleport(UMarkableComponent* Target);
 
 	//What is currently marked
@@ -159,13 +160,15 @@ protected:
 
 	void DashToTarget(UMarkableComponent* Target);
 
-	//Custom speed
+	//Custom speed vector
 	UPROPERTY(EditAnywhere, Category="Movement")
 	FVector ViLocity;
+	
 	//Custom air resistance
 	UPROPERTY(EditAnywhere, Category="Movement")
 	float Drag = 0.5f;
 
+	//How slow time goes when aiming
 	UPROPERTY(EditAnywhere, Category="Slow Motion")
 	float TimeDilationFactor = 0.1f;
 
@@ -180,17 +183,22 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Camera")
 	float SlowMotionFOV = 60.f;
 
+	//The current player sensitivity
 	float CurrentSensitivity = 1.f;
 
+	//The normal player sensitivity
 	UPROPERTY(EditAnywhere, Category="Camera")
 	float DefaultSensitivity = 1.f;
 
+	//The sensitivity when aiming in
 	UPROPERTY(EditAnywhere, Category="Camera")
 	float AimSensitivity = 0.4f;
 
+	//How close the player needs to be to attack an enemy
 	UPROPERTY(EditAnywhere, Category="Combat")
 	float DistanceToAttack = 300.f;
 
+	//How far the teleport goes
 	UPROPERTY(EditAnywhere, Category="Combat")
 	float TeleportDistance = 200.f;
 
