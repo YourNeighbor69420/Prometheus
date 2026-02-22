@@ -71,35 +71,35 @@ void UMarkableComponent::DealDamage_Implementation(float damage)
 
 float UMarkableComponent::GetHealth_Implementation()
 {
-	return IMarkingInterface::GetHealth_Implementation();
+	IMarkingInterface::GetHealth_Implementation();
 
 	return Health;
 }
 
 float UMarkableComponent::GetSpeedReward_Implementation()
 {
-	return IMarkingInterface::GetSpeedReward_Implementation();
+	IMarkingInterface::GetSpeedReward_Implementation();
 
 	return SpeedReward;
 }
 
 float UMarkableComponent::GetExecuteSpeedReward_Implementation()
 {
-	return IMarkingInterface::GetExecuteSpeedReward_Implementation();
+	IMarkingInterface::GetExecuteSpeedReward_Implementation();
 
 	return ExecuteSpeedReward;
 }
 
 float UMarkableComponent::GetSpeedPenalty_Implementation()
 {
-	return IMarkingInterface::GetSpeedPenalty_Implementation();
+	IMarkingInterface::GetSpeedPenalty_Implementation();
 
 	return SpeedPenalty;
 }
 
 float UMarkableComponent::GetDamageThreshold_Implementation()
 {
-	return IMarkingInterface::GetDamageThreshold_Implementation();
+	IMarkingInterface::GetDamageThreshold_Implementation();
 
 	return DamageThreshold;
 }
