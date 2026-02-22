@@ -276,17 +276,33 @@ void APrometheusCharacter::AttackInput()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Attack input" );
 	if (PlayerSubsystem->GetMarkedTarget())
 	{
+		//Teleport behind the target
 		AttackTeleport(PlayerSubsystem->GetMarkedTarget());
-		
 	}
-	
-	
-	
 }
 
 void APrometheusCharacter::Attack(UMarkableComponent* Target)
 {
+	
 	AttackTeleport(Target);
+
+	//If the damage can kill the enemy, execute it and give a large speed reward
+	if (Damage >= Target->GetHealth_Implementation())
+	{
+		ViLocity = ViLocity * Target->GetExecuteSpeedReward_Implementation();
+		Target->DealDamage_Implementation(Damage);
+	}
+	//If the damage isn't above half the enemy's current health, take a speed penalty
+	else if (Damage < Target->GetDamageThreshold_Implementation())
+	{
+		ViLocity = ViLocity * Target->GetSpeedPenalty_Implementation();
+	}
+	//If you didn't kill it instantly and did do more than half its health, deal damage and get a normal speed reward
+	else
+	{
+		ViLocity = ViLocity * Target->GetSpeedReward_Implementation();
+		Target->DealDamage_Implementation(Damage);
+	}
 }
 
 void APrometheusCharacter::RestartInput()
@@ -371,6 +387,8 @@ void APrometheusCharacter::AttackTeleport(UMarkableComponent* Target)
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, FString::Printf(TEXT("No collision on: %s"), *Target->GetOwner()->GetName()));
 		//Re-enable collision on the player
 		GetCapsuleComponent()->IgnoreActorWhenMoving(EnemyActor, false);
+
+		Attack(Target);
 
 	}
 

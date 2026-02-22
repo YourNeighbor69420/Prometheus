@@ -36,6 +36,9 @@ public:
 	float GetHealth();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
+	float GetMaxHealth();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
 	float GetSpeedReward();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")

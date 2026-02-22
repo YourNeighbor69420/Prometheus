@@ -31,6 +31,7 @@ public:
 	virtual void OnUnMarked_Implementation() override;
 	virtual void DealDamage_Implementation(float damage) override;
 	virtual float GetHealth_Implementation() override;
+	virtual float GetMaxHealth_Implementation() override;
 	virtual float GetSpeedReward_Implementation() override;
 	virtual float GetExecuteSpeedReward_Implementation() override;
 	virtual float GetSpeedPenalty_Implementation() override;

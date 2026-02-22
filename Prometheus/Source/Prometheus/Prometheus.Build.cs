@@ -24,13 +24,7 @@ public class Prometheus : ModuleRules
 		PrivateDependencyModuleNames.AddRange(new string[] { });
 
 		PublicIncludePaths.AddRange(new string[] {
-			"Prometheus",
-			"Prometheus/Variant_Horror",
-			"Prometheus/Variant_Horror/UI",
-			"Prometheus/Variant_Shooter",
-			"Prometheus/Variant_Shooter/AI",
-			"Prometheus/Variant_Shooter/UI",
-			"Prometheus/Variant_Shooter/Weapons"
+			"Prometheus"
 		});
 
 		// Uncomment if you are using Slate UI

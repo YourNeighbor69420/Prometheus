@@ -31,7 +31,7 @@ void UMarkableComponent::BeginPlay()
 	Super::BeginPlay();
 
 	Health = MaxHealth;
-	DamageThreshold = MaxHealth / 2;
+	DamageThreshold = Health / 2;
 	// ...
 	
 }
@@ -67,6 +67,15 @@ void UMarkableComponent::DealDamage_Implementation(float damage)
 	IMarkingInterface::DealDamage_Implementation(damage);
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("damage dealt: %f"), damage));
 
+	Health -= damage;
+	Health = FMath::Clamp(Health, 0, MaxHealth);
+	
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("enemy health: %f / %f"), Health, MaxHealth));
+
+	if (Health == 0.f)
+	{
+		GetOwner()->Destroy();
+	}
 }
 
 float UMarkableComponent::GetHealth_Implementation()
@@ -74,6 +83,13 @@ float UMarkableComponent::GetHealth_Implementation()
 	IMarkingInterface::GetHealth_Implementation();
 
 	return Health;
+}
+
+float UMarkableComponent::GetMaxHealth_Implementation()
+{
+	IMarkingInterface::GetMaxHealth_Implementation();
+
+	return MaxHealth;
 }
 
 float UMarkableComponent::GetSpeedReward_Implementation()
