@@ -29,11 +29,35 @@ public:
 
 	virtual void OnMarked_Implementation() override;
 	virtual void OnUnMarked_Implementation() override;
-	virtual void OnAttackHit_Implementation() override;
+	virtual void DealDamage_Implementation(float damage) override;
+	virtual float GetHealth_Implementation() override;
+	virtual float GetSpeedReward_Implementation() override;
+	virtual float GetExecuteSpeedReward_Implementation() override;
+	virtual float GetSpeedPenalty_Implementation() override;
+	virtual float GetDamageThreshold_Implementation() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Visuals")
 	UWidgetComponent* MarkWidget;
 
 	UPROPERTY(EditAnywhere, Category = "Visuals")
 	float SpinSpeed = 90.f;
+
+	float Health;
+	
+	UPROPERTY(EditAnywhere, Category = "Stats")
+	float MaxHealth = 100;
+
+	UPROPERTY(EditAnywhere, Category = "Stats")
+	float SpeedReward = 1.2;
+	
+	UPROPERTY(EditAnywhere, Category = "Stats")
+	float ExecuteSpeedReward = 1.4;
+
+	UPROPERTY(EditAnywhere, Category = "Stats")
+	float SpeedPenalty = 0.67;
+	
+	UPROPERTY(EditAnywhere, Category = "Stats")
+	float DamageThreshold;
+	
+	
 };

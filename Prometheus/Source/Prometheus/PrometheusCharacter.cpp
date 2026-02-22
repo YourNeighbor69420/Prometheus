@@ -92,16 +92,21 @@ void APrometheusCharacter::Tick(float DeltaTime)
 	
 	//AddMovementInput(Direction, 1.0f);
 
-	FString DebugMsg = FString::Printf(TEXT("Velocity: %s | Speed: %f"), 
-			*ViLocity.ToString(), 
-			ViLocity.Size());
+	
             
-	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, DebugMsg);
+	
 	
 	if (!ViLocity.IsNearlyZero())
 	{
 		ViLocity = ViLocity * (1.f - (Drag * DeltaTime));
-
+		Damage = ViLocity.Size() / 10.f;
+		
+		FString DebugMsg = FString::Printf(TEXT("Velocity: %s | Speed: %f, damage : %f"), 
+				*ViLocity.ToString(), 
+				ViLocity.Size(),
+				Damage);
+		
+		GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, DebugMsg);
 		/*if (ViLocity.SizeSquared() < 1000.f)
 		{
 			ViLocity = FVector::ZeroVector;

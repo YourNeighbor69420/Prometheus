@@ -163,6 +163,8 @@ protected:
 	//Custom speed vector
 	UPROPERTY(EditAnywhere, Category="Movement")
 	FVector ViLocity;
+
+	float Damage;
 	
 	//Custom air resistance
 	UPROPERTY(EditAnywhere, Category="Movement")
@@ -201,6 +203,8 @@ protected:
 	//How far the teleport goes
 	UPROPERTY(EditAnywhere, Category="Combat")
 	float TeleportDistance = 200.f;
+
+	
 
 	
 

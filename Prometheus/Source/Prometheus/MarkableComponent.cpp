@@ -30,6 +30,8 @@ void UMarkableComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	Health = MaxHealth;
+	DamageThreshold = MaxHealth / 2;
 	// ...
 	
 }
@@ -60,11 +62,46 @@ void UMarkableComponent::OnUnMarked_Implementation()
 
 }
 
-void UMarkableComponent::OnAttackHit_Implementation()
+void UMarkableComponent::DealDamage_Implementation(float damage)
 {
-	IMarkingInterface::OnAttackHit_Implementation();
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Hit Enemy");
+	IMarkingInterface::DealDamage_Implementation(damage);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("damage dealt: %f"), damage));
+
 }
 
+float UMarkableComponent::GetHealth_Implementation()
+{
+	return IMarkingInterface::GetHealth_Implementation();
+
+	return Health;
+}
+
+float UMarkableComponent::GetSpeedReward_Implementation()
+{
+	return IMarkingInterface::GetSpeedReward_Implementation();
+
+	return SpeedReward;
+}
+
+float UMarkableComponent::GetExecuteSpeedReward_Implementation()
+{
+	return IMarkingInterface::GetExecuteSpeedReward_Implementation();
+
+	return ExecuteSpeedReward;
+}
+
+float UMarkableComponent::GetSpeedPenalty_Implementation()
+{
+	return IMarkingInterface::GetSpeedPenalty_Implementation();
+
+	return SpeedPenalty;
+}
+
+float UMarkableComponent::GetDamageThreshold_Implementation()
+{
+	return IMarkingInterface::GetDamageThreshold_Implementation();
+
+	return DamageThreshold;
+}
 
 
