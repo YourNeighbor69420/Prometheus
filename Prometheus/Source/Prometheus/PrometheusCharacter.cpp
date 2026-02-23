@@ -91,10 +91,6 @@ void APrometheusCharacter::Tick(float DeltaTime)
 	}*/
 	
 	//AddMovementInput(Direction, 1.0f);
-
-	
-            
-	
 	
 	if (!ViLocity.IsNearlyZero())
 	{
@@ -111,6 +107,17 @@ void APrometheusCharacter::Tick(float DeltaTime)
 		{
 			ViLocity = FVector::ZeroVector;
 		}*/
+
+		if (MaxUIViLocity > 0.0f)
+		{
+			float CurrentSpeed = ViLocity.Size();
+
+			float Percentage = FMath::Clamp(CurrentSpeed / MaxUIViLocity, 0.0f, 1.0f);
+
+			bool bIsMaxSpeed = (Percentage >= 0.99f);
+
+			OnSpeedUpdated.Broadcast(Percentage, bIsMaxSpeed);
+		}
 	}
 
 	if (!ViLocity.IsNearlyZero())

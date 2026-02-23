@@ -19,6 +19,7 @@ class UInputAction;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSpeedUpdated, float, SpeedPercentage, bool, bIsMaxSpeed);
 
 /**
  *  A basic first person character
@@ -145,14 +146,19 @@ protected:
 	//What is currently marked
 	//TWeakObjectPtr<UMarkableComponent> CurrentMarkedTarget;
 
+public:
+	
+	UPROPERTY(BlueprintAssignable, Category="UI Events")
+	FOnSpeedUpdated OnSpeedUpdated;
+	
 protected:
 
 	/** Set up input action bindings */
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 
-	//Max Player speed
+	/*//Max Player speed
 	UPROPERTY(EditAnywhere, Category="Movement")
-	float MaxSpeed = 20000.f;
+	float MaxSpeed = 20000.f;*/
 
 	//How fast the player is sent out at the beginning of the level
 	UPROPERTY(EditAnywhere, Category="Movement")
@@ -163,12 +169,15 @@ protected:
 	//Custom speed vector
 	UPROPERTY(EditAnywhere, Category="Movement")
 	FVector ViLocity;
+	
+	UPROPERTY(EditAnywhere, Category="Movement UI")
+	float MaxUIViLocity = 5000.f;
 
 	float Damage;
 	
 	//Custom air resistance
 	UPROPERTY(EditAnywhere, Category="Movement")
-	float Drag = 0.5f;
+	float Drag = 0.25f;
 
 	//How slow time goes when aiming
 	UPROPERTY(EditAnywhere, Category="Slow Motion")
@@ -215,6 +224,7 @@ public:
 
 	/** Returns first person camera component **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
 
 };
 

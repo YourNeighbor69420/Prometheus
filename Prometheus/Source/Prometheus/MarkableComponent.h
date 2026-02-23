@@ -49,10 +49,10 @@ public:
 	float MaxHealth = 100;
 
 	UPROPERTY(EditAnywhere, Category = "Stats")
-	float SpeedReward = 1.2;
+	float SpeedReward = 1.3;
 	
 	UPROPERTY(EditAnywhere, Category = "Stats")
-	float ExecuteSpeedReward = 1.4;
+	float ExecuteSpeedReward = 1.6;
 
 	UPROPERTY(EditAnywhere, Category = "Stats")
 	float SpeedPenalty = 0.67;
