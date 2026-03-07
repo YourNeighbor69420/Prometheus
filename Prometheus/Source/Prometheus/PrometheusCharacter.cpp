@@ -57,7 +57,7 @@ void APrometheusCharacter::BeginPlay()
 			PlayerSubsystem = LocalPlayer->GetSubsystem<UPlayerSubsystem>();
 		}
 	}
-	
+	float number = 1.f;
 	/*if (PlayerSubsystem)
 	{
 		UE_LOG(LogTemp, Display, TEXT("Player Subsystem Created"));
