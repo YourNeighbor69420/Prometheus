@@ -6,9 +6,10 @@
 #include "GameFramework/Pawn.h"
 #include "TimerManager.h"
 
-UMyBTTaskNode_MeleeAttack::UMyBTTask_MeleeAttack()
+UMyBTTaskNode_MeleeAttack::UMyBTTaskNode_MeleeAttack()
 {
 	NodeName = "Melee Attack";
+	bCreateNodeInstance = true;
 }
 
 EBTNodeResult::Type UMyBTTaskNode_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -22,7 +23,7 @@ EBTNodeResult::Type UMyBTTaskNode_MeleeAttack::ExecuteTask(UBehaviorTreeComponen
 
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Attacking the player");
 
-	AIPawn->GetWorldTimerManager().SetTimer(AttackTimerHandle, FTimerDelegate::CreateUObject(this, &UMyBTTaskNode_MeleeAttack::FinishAttackTask, OwnerComp), AttackDuration, false);
+	AIPawn->GetWorldTimerManager().SetTimer(AttackTimerHandle, FTimerDelegate::CreateUObject(this, &UMyBTTaskNode_MeleeAttack::FinishAttackTask, &OwnerComp), AttackDuration, false);
 
 	return EBTNodeResult::InProgress;
 }
