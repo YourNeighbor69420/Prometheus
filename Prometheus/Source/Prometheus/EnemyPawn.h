@@ -31,4 +31,7 @@ public:
 	UBehaviorTree* EnemyBehaviorTree;
 
 	UBehaviorTree* GetBehaviorTree();
+
+	UPROPERTY(EditAnywhere, Category = "movement")
+	float TurnSpeed = 2.0f;
 };

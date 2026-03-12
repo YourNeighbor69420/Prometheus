@@ -23,6 +23,18 @@ void AEnemyPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	FVector CurrentVelocity = GetVelocity();
+
+	if (CurrentVelocity.SizeSquared() > 10.f)
+	{
+		FRotator CurrentRotation = GetActorRotation();
+		FRotator TargetRotation = CurrentVelocity.Rotation();
+
+		FRotator SmoothRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, DeltaTime, TurnSpeed);
+
+		SetActorRotation(SmoothRotation);
+	}
+
 }
 
 // Called to bind functionality to input
