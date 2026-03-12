@@ -34,7 +34,7 @@ EBTNodeResult::Type UMyBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& 
 		return EBTNodeResult::Failed;
 	}
 
-	FVector SpawnLocation = AIPawn->GetActorLocation() + (AIPawn->GetActorForwardVector() * 100); 
+	FVector SpawnLocation = AIPawn->GetActorLocation() + (AIPawn->GetActorForwardVector() * 300); 
 
 	FVector Direction = TargetActor->GetActorLocation() - SpawnLocation;
 	FRotator SpawnRotation = Direction.Rotation();

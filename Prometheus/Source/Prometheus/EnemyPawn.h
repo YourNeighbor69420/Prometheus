@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "BehaviorTree/BehaviorTree.h"
 #include "EnemyPawn.generated.h"
 
 UCLASS()
@@ -26,4 +27,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(EditAnywhere, Category = "ai")
+	UBehaviorTree* EnemyBehaviorTree;
+
+	UBehaviorTree* GetBehaviorTree();
 };

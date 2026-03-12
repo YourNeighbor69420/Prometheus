@@ -32,3 +32,8 @@ void AEnemyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 }
 
+UBehaviorTree* AEnemyPawn::GetBehaviorTree()
+{
+	return EnemyBehaviorTree;
+}
+

@@ -13,5 +13,6 @@ UCLASS()
 class PROMETHEUS_API AEnemyAIController : public AAIController
 {
 	GENERATED_BODY()
-	
+
+	virtual void OnPossess(APawn* InPawn) override;
 };
