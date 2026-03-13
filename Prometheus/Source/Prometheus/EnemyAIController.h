@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "DetourCrowdAIController.h"
 #include "EnemyAIController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROMETHEUS_API AEnemyAIController : public AAIController
+class PROMETHEUS_API AEnemyAIController : public ADetourCrowdAIController
 {
 	GENERATED_BODY()
 
