@@ -291,7 +291,7 @@ void APrometheusCharacter::AttackInput()
 void APrometheusCharacter::Attack(UMarkableComponent* Target)
 {
 	
-	AttackTeleport(Target);
+	//AttackTeleport(Target);
 
 	//If the damage can kill the enemy, execute it and give a large speed reward
 	if (Damage >= Target->GetHealth_Implementation())
