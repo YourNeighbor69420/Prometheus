@@ -7,11 +7,13 @@
 #include "PlayerDamageInterface.h"
 #include "PlayerSubsystem.h"
 #include "Components/SphereComponent.h"
+#include "Camera/CameraShakeBase.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 
 
 #include "PrometheusCharacter.generated.h"
+
 
 class UInputComponent;
 class USkeletalMeshComponent;
@@ -153,6 +155,9 @@ public:
 	
 	UPROPERTY(BlueprintAssignable, Category="UI Events")
 	FOnSpeedUpdated OnSpeedUpdated;
+
+	UPROPERTY(EditDefaultsOnly, Category="UI Events")
+	TSubclassOf<UCameraShakeBase> DamageCameraShake; ;
 	
 protected:
 

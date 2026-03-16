@@ -30,7 +30,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Combat")
+	UPROPERTY(EditAnywhere, Category = "Combat")
 	float ProjectileDamage;
 
 };

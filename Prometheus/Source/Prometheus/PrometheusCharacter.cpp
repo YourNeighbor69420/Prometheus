@@ -53,6 +53,14 @@ void APrometheusCharacter::ApplyPlayerDamage_Implementation(float SpeedDebuff)
 	IPlayerDamageInterface::ApplyPlayerDamage_Implementation(SpeedDebuff);
 
 	ViLocity *= SpeedDebuff;
+	if (DamageCameraShake)
+	{
+		if (APlayerController* PC = Cast<APlayerController>(GetController()))
+		{
+			PC->ClientStartCameraShake(DamageCameraShake);
+		}
+			
+	}
 }
 
 void APrometheusCharacter::BeginPlay()
