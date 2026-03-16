@@ -3,6 +3,8 @@
 
 #include "EnemyPawn.h"
 
+#include "PlayerDamageInterface.h"
+
 // Sets default values
 AEnemyPawn::AEnemyPawn()
 {
@@ -43,6 +45,36 @@ void AEnemyPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
+
+void AEnemyPawn::PerformAttack(AActor* TargetActor)
+{
+	CurrentTargetActor = TargetActor;
+	GetWorldTimerManager().SetTimer(AttackTimerHandle, this, &AEnemyPawn::ExecuteDamageCheck, AttackSpeed, false);
+}
+
+void AEnemyPawn::ExecuteDamageCheck()
+{
+	if (CurrentTargetActor)
+	{
+
+		float Distance = FVector::Dist(GetActorLocation(), CurrentTargetActor->GetActorLocation());
+
+		if (Distance <= AttackReach)
+		{
+			if (CurrentTargetActor->Implements<UPlayerDamageInterface>())
+			{
+				IPlayerDamageInterface::Execute_ApplyPlayerDamage(CurrentTargetActor, AttackDamage);
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Black, TEXT("enemy hit the player"));
+			}
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Player dodged attack"));
+		}
+	}
+	CurrentTargetActor = nullptr;
+}
+
 
 UBehaviorTree* AEnemyPawn::GetBehaviorTree()
 {

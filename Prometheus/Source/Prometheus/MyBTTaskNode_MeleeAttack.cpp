@@ -3,6 +3,8 @@
 
 #include "MyBTTaskNode_MeleeAttack.h"
 #include "EnemyAIController.h"
+#include "EnemyPawn.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Pawn.h"
 #include "TimerManager.h"
 
@@ -16,13 +18,18 @@ EBTNodeResult::Type UMyBTTaskNode_MeleeAttack::ExecuteTask(UBehaviorTreeComponen
 {
 	
 	AAIController* AIController = OwnerComp.GetAIOwner();
-	if (!AIController) return EBTNodeResult::Failed;
+	UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
+	if (!AIController || !Blackboard) return EBTNodeResult::Failed;
 
-	APawn* AIPawn = AIController->GetPawn();
+	AEnemyPawn* AIPawn = Cast<AEnemyPawn>(AIController->GetPawn());
 	if (!AIPawn) return EBTNodeResult::Failed;
+	
+	UObject* TargetObject = Blackboard->GetValueAsObject(GetSelectedBlackboardKey());
+	AActor* TargetActor = Cast<AActor>(TargetObject);
+	if (!TargetActor) return EBTNodeResult::Failed;
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Attacking the player");
-
+	AIPawn->PerformAttack(TargetActor);
+	
 	AIPawn->GetWorldTimerManager().SetTimer(AttackTimerHandle, FTimerDelegate::CreateUObject(this, &UMyBTTaskNode_MeleeAttack::FinishAttackTask, &OwnerComp), AttackDuration, false);
 
 	return EBTNodeResult::InProgress;

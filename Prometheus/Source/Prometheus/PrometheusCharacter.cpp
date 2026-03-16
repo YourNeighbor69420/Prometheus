@@ -12,6 +12,7 @@
 #include "MarkingInterface.h"
 #include "Prometheus.h"
 #include "Kismet/GameplayStatics.h"
+#include "Math/UnitConversion.h"
 
 APrometheusCharacter::APrometheusCharacter()
 {
@@ -45,6 +46,13 @@ APrometheusCharacter::APrometheusCharacter()
 	// Configure character movement
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
 	GetCharacterMovement()->AirControl = 0.5f;
+}
+
+void APrometheusCharacter::ApplyPlayerDamage_Implementation(float SpeedDebuff)
+{
+	IPlayerDamageInterface::ApplyPlayerDamage_Implementation(SpeedDebuff);
+
+	ViLocity *= SpeedDebuff;
 }
 
 void APrometheusCharacter::BeginPlay()

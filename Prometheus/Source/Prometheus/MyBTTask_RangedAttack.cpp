@@ -10,7 +10,6 @@
 UMyBTTask_RangedAttack::UMyBTTask_RangedAttack()
 {
 	NodeName = "Ranged Attack";
-
 	bCreateNodeInstance = true;
 }
 

@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BehaviorTree/BTTaskNode.h"
+#include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
 #include "MyBTTaskNode_MeleeAttack.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PROMETHEUS_API UMyBTTaskNode_MeleeAttack : public UBTTaskNode
+class PROMETHEUS_API UMyBTTaskNode_MeleeAttack : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
 	

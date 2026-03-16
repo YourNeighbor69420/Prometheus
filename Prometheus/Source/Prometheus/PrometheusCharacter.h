@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "MarkableComponent.h"
+#include "PlayerDamageInterface.h"
 #include "PlayerSubsystem.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
@@ -25,7 +26,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSpeedUpdated, float, SpeedPercen
  *  A basic first person character
  */
 UCLASS(abstract)
-class APrometheusCharacter : public ACharacter
+class APrometheusCharacter : public ACharacter, public IPlayerDamageInterface
 {
 	GENERATED_BODY()
 
@@ -78,6 +79,8 @@ protected:
 	
 public:
 	APrometheusCharacter();
+
+	virtual void ApplyPlayerDamage_Implementation(float SpeedDebuff) override;
 
 protected:
 	void BeginPlay() override;

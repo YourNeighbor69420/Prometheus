@@ -27,11 +27,30 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UPROPERTY(EditAnywhere, Category = "ai")
+	
+	void PerformAttack(AActor* TargetActor);
+
+	void ExecuteDamageCheck();
+
+	UPROPERTY()
+	AActor* CurrentTargetActor;
+
+	FTimerHandle AttackTimerHandle;
+
+	UPROPERTY(EditAnywhere, Category = "AI")
 	UBehaviorTree* EnemyBehaviorTree;
 
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	float AttackSpeed = 1.f;
+	
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	float AttackReach = 300.f;
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	float AttackDamage= 1.f;
+	
 	UBehaviorTree* GetBehaviorTree();
 
-	UPROPERTY(EditAnywhere, Category = "movement")
+	UPROPERTY(EditAnywhere, Category = "Movement")
 	float TurnSpeed = 2.0f;
 };
