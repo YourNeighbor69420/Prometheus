@@ -3,14 +3,16 @@
 
 #include "EnemyPawn.h"
 
+#include "AIController.h"
 #include "PlayerDamageInterface.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 AEnemyPawn::AEnemyPawn()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	
 }
 
 // Called when the game starts or when spawned
@@ -79,5 +81,45 @@ void AEnemyPawn::ExecuteDamageCheck()
 UBehaviorTree* AEnemyPawn::GetBehaviorTree()
 {
 	return EnemyBehaviorTree;
+}
+
+void AEnemyPawn::Deactivate()
+{
+	SetActorTickEnabled(false);
+	
+	SetActorHiddenInGame(true);
+
+	SetActorEnableCollision(false);
+
+	AAIController* AiController = Cast<AAIController>(GetController());
+	if (AiController)
+	{
+		AiController->StopMovement();
+		UBrainComponent* EnemyBrain = AiController->GetBrainComponent();
+		if (EnemyBrain)
+		{
+			EnemyBrain->StopLogic("Deactivated");
+		}
+	}
+	
+}
+
+void AEnemyPawn::Activate()
+{
+	SetActorTickEnabled(true);
+	
+	SetActorHiddenInGame(false);
+
+	SetActorEnableCollision(true);
+	
+	AAIController* AiController = Cast<AAIController>(GetController());
+	if (AiController)
+	{
+		UBrainComponent* EnemyBrain = AiController->GetBrainComponent();
+		if (EnemyBrain)
+		{
+			EnemyBrain->StartLogic();
+		}
+	}
 }
 

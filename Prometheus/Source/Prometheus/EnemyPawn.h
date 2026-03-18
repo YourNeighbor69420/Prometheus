@@ -19,6 +19,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	
 
 public:	
 	// Called every frame
@@ -53,4 +54,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float TurnSpeed = 2.0f;
+
+	UFUNCTION(BlueprintCallable, Category = "Pooling")
+	virtual void Deactivate();
+	
+	UFUNCTION(BlueprintCallable, Category = "Pooling")
+	virtual void Activate();
 };
