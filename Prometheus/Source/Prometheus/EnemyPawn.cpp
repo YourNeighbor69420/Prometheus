@@ -4,6 +4,7 @@
 #include "EnemyPawn.h"
 
 #include "AIController.h"
+#include "ArenaManager.h"
 #include "PlayerDamageInterface.h"
 #include "Components/CapsuleComponent.h"
 
@@ -100,6 +101,13 @@ void AEnemyPawn::Deactivate()
 		{
 			EnemyBrain->StopLogic("Deactivated");
 		}
+	}
+
+	if (OwningArena)
+	{
+		OwningArena->ReportEnemyDeath();
+
+		OwningArena = nullptr;
 	}
 	
 }

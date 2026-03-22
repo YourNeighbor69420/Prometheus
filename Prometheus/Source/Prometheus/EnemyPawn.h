@@ -7,6 +7,8 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "EnemyPawn.generated.h"
 
+class AArenaManager;
+
 UCLASS()
 class PROMETHEUS_API AEnemyPawn : public APawn
 {
@@ -19,7 +21,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
+
+	UPROPERTY()
+	AArenaManager* OwningArena;
 
 public:	
 	// Called every frame
@@ -60,4 +64,6 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Pooling")
 	virtual void Activate();
+
+	void SetOwningArena(AArenaManager* Arena) { OwningArena = Arena;}
 };

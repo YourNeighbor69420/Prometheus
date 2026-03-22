@@ -45,16 +45,18 @@ void UMyBTTask_FlyToTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
 	AActor* TargetActor = Cast<AActor>(TargetObject);
 	
 	FVector PawnLoc = Pawn->GetActorLocation();
-	FVector TargetLoc = TargetActor->GetActorLocation();
-	float Distance = FVector::Dist(PawnLoc, TargetLoc);
-
-	if (Distance <= AcceptableRadius)
+	if (TargetActor)
 	{
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-		return;
-	}
+		FVector TargetLoc = TargetActor->GetActorLocation();
+		float Distance = FVector::Dist(PawnLoc, TargetLoc);
 
-	FVector Direction = (TargetLoc - PawnLoc).GetSafeNormal();
-	Pawn->AddMovementInput(Direction,1.f);
-	
+		if (Distance <= AcceptableRadius)
+		{
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			return;
+		}
+
+		FVector Direction = (TargetLoc - PawnLoc).GetSafeNormal();
+		Pawn->AddMovementInput(Direction,1.f);
+	}
 }

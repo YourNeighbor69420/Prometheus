@@ -32,7 +32,7 @@ AEnemyPawn* UEnemyPoolSubsystem::RequestEnemy(TSubclassOf<AEnemyPawn> EnemyClass
 	{
 		//Set it to the spawn point location
 		Enemy -> SetActorTransform(SpawnTransform);
-		//Enemy -> Reactivate();
+		Enemy -> Activate();
 	}
 
 	return Enemy;
@@ -42,7 +42,7 @@ void UEnemyPoolSubsystem::ReturnEnemy(AEnemyPawn* EnemyToReturn)
 {
 	if (!EnemyToReturn) return;
 
-	//EnemyToReturn->Deactivate();
+	EnemyToReturn->Deactivate();
 	
 	//Find class of enemy
 	TSubclassOf<AEnemyPawn> ClassType = EnemyToReturn->GetClass();
