@@ -77,7 +77,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Input")
 	class UInputAction* DashAction;
-	
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Audio")
+	class UAudioComponent* MusicAudioComponent;
 	
 public:
 	APrometheusCharacter();

@@ -8,6 +8,7 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/AudioComponent.h"
 #include "PlayerSubsystem.h"
 #include "MarkingInterface.h"
 #include "Prometheus.h"
@@ -36,6 +37,9 @@ APrometheusCharacter::APrometheusCharacter()
 	FirstPersonCameraComponent->bEnableFirstPersonScale = true;
 	FirstPersonCameraComponent->FirstPersonFieldOfView = 70.0f;
 	FirstPersonCameraComponent->FirstPersonScale = 0.6f;
+
+	MusicAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("MusicAudio"));
+	MusicAudioComponent->SetupAttachment(RootComponent);
 
 	// configure the character comps
 	GetMesh()->SetOwnerNoSee(true);
@@ -107,6 +111,11 @@ void APrometheusCharacter::Tick(float DeltaTime)
 	}*/
 	
 	//AddMovementInput(Direction, 1.0f);
+
+	if (MusicAudioComponent && MusicAudioComponent->IsPlaying())
+	{
+		MusicAudioComponent->SetFloatParameter(FName("PlayerSpeed"), ViLocity.Size());
+	}
 	
 	if (!ViLocity.IsNearlyZero())
 	{
