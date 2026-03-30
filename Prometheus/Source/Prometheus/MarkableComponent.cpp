@@ -3,6 +3,7 @@
 
 #include "MarkableComponent.h"
 
+#include "EnemyPoolSubsystem.h"
 #include "Components/WidgetComponent.h"
 
 // Sets default values for this component's properties
@@ -74,7 +75,15 @@ void UMarkableComponent::DealDamage_Implementation(float damage)
 
 	if (Health == 0.f)
 	{
-		GetOwner()->Destroy();
+		UEnemyPoolSubsystem* EnemyPoolSubsystem = GetWorld()->GetSubsystem<UEnemyPoolSubsystem>();
+		if (EnemyPoolSubsystem)
+		{
+
+			AActor* OwnerActor = GetOwner();
+			AEnemyPawn* EnemyPawn = Cast<AEnemyPawn>(OwnerActor);
+			EnemyPoolSubsystem->ReturnEnemy(EnemyPawn);
+		}
+		
 	}
 }
 
