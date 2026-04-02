@@ -370,7 +370,7 @@ FHitResult APrometheusCharacter::LineTrace()
 
 		//Get camera location and rotation and make line trace X units away
 		FVector Start = CameraLocation;
-		FVector End = Start + (CameraRotation.Vector() * 10000.f);
+		FVector End = Start + (CameraRotation.Vector() * 20000.f);
 
 		//Set collision to not hit self
 		FCollisionQueryParams Params;
