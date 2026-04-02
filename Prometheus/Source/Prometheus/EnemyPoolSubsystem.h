@@ -36,5 +36,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Pooling")
 	void ReturnEnemy(AEnemyPawn* EnemyToReturn);
+
+	FActorSpawnParameters SpawnParameters;
+	
 	
 };

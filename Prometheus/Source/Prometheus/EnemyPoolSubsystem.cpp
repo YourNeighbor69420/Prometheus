@@ -12,6 +12,7 @@ AEnemyPawn* UEnemyPoolSubsystem::RequestEnemy(TSubclassOf<AEnemyPawn> EnemyClass
 
 	AEnemyPawn* Enemy = nullptr;
 
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	//If object pool has an array for the enemy and if it isn't empty
 	if (PoolMap.Contains(EnemyClass) && !PoolMap[EnemyClass].InactiveEnemies.IsEmpty())
 	{
@@ -20,11 +21,14 @@ AEnemyPawn* UEnemyPoolSubsystem::RequestEnemy(TSubclassOf<AEnemyPawn> EnemyClass
 	}
 	else
 	{
+
 		//If not, spawn a fresh enemy to be used
 		UWorld* World = GetWorld();
 		if (World)
 		{
-			Enemy = World->SpawnActor<AEnemyPawn>(EnemyClass, SpawnTransform);
+
+			Enemy = World->SpawnActor<AEnemyPawn>(EnemyClass, SpawnTransform, SpawnParameters);
+			
 		}
 	}
 	//Prepare the enemy

@@ -62,7 +62,6 @@ void AArenaManager::StartPhase()
 
 			if (SpawnedEnemy)
 			{
-
 				SpawnedEnemy->SetOwningArena(this);
 				ActiveEnemiesInRoom++;
 			}
