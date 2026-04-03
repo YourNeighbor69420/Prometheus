@@ -6,7 +6,9 @@
 #include "AIController.h"
 #include "ArenaManager.h"
 #include "PlayerDamageInterface.h"
+#include "PrometheusCharacter.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AEnemyPawn::AEnemyPawn()
@@ -100,6 +102,9 @@ void AEnemyPawn::Deactivate()
 		if (EnemyBrain)
 		{
 			EnemyBrain->StopLogic("Deactivated");
+			bIsAlive = false;
+			APrometheusCharacter* PlayerChar = Cast<APrometheusCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+			
 		}
 	}
 
@@ -127,6 +132,7 @@ void AEnemyPawn::Activate()
 		if (EnemyBrain)
 		{
 			EnemyBrain->StartLogic();
+			bIsAlive = true;
 		}
 	}
 }

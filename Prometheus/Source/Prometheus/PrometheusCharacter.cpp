@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "PrometheusCharacter.h"
+
+#include "EnemyPawn.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -348,9 +350,14 @@ void APrometheusCharacter::DashInput()
 
 	UMarkableComponent* MarkedTarget = PlayerSubsystem ? PlayerSubsystem->GetMarkedTarget(): nullptr;
 
+	AEnemyPawn* TargetEnemy = Cast<AEnemyPawn>(MarkedTarget->GetOwner());
+	
 	if (MarkedTarget)
 	{
-		DashToTarget(MarkedTarget);
+		if (TargetEnemy->bIsAlive)
+		{
+			DashToTarget(MarkedTarget);
+		}
 	}
 }
 
@@ -439,6 +446,8 @@ void APrometheusCharacter::DashToTarget(UMarkableComponent* Target)
 	SetActorRotation(Direction.Rotation());
 	//keep the same speed but change where we are directed
 	ViLocity = Direction * ViLocity.Size();
+
+	//Direction = FVector::ZeroVector;
 	/*
 	UCharacterMovementComponent* MoveComp = GetCharacterMovement();
 

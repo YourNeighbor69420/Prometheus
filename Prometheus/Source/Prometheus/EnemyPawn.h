@@ -65,5 +65,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Pooling")
 	virtual void Activate();
 
+	bool bIsAlive;
+
 	void SetOwningArena(AArenaManager* Arena) { OwningArena = Arena;}
 };
