@@ -53,6 +53,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	float AttackDamage= 1.f;
+
+	UPROPERTY(EditAnywhere, Category = "Health")
+	int AliveComponents = 1;
 	
 	UBehaviorTree* GetBehaviorTree();
 
@@ -60,12 +63,12 @@ public:
 	float TurnSpeed = 2.0f;
 
 	UFUNCTION(BlueprintCallable, Category = "Pooling")
-	virtual void Deactivate();
+	bool Deactivated();
 	
 	UFUNCTION(BlueprintCallable, Category = "Pooling")
 	virtual void Activate();
 
-	bool bIsAlive;
+	bool bIsAlive = 0;
 
 	void SetOwningArena(AArenaManager* Arena) { OwningArena = Arena;}
 };

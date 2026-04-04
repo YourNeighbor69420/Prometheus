@@ -66,12 +66,12 @@ void UMarkableComponent::OnUnMarked_Implementation()
 void UMarkableComponent::DealDamage_Implementation(float damage)
 {
 	IMarkingInterface::DealDamage_Implementation(damage);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("damage dealt: %f"), damage));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("damage dealt: %f"), damage));
 
 	Health -= damage;
 	Health = FMath::Clamp(Health, 0, MaxHealth);
 	
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("enemy health: %f / %f"), Health, MaxHealth));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("enemy health: %f / %f"), Health, MaxHealth));
 
 	if (Health == 0.f)
 	{

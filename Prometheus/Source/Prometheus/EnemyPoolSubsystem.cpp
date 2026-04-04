@@ -46,11 +46,13 @@ void UEnemyPoolSubsystem::ReturnEnemy(AEnemyPawn* EnemyToReturn)
 {
 	if (!EnemyToReturn) return;
 
-	EnemyToReturn->Deactivate();
+	if (EnemyToReturn->Deactivated())
+	{
+		//Find class of enemy
+		TSubclassOf<AEnemyPawn> ClassType = EnemyToReturn->GetClass();
+        
+		PoolMap.FindOrAdd(ClassType).InactiveEnemies.Push(EnemyToReturn);
+	}
 	
-	//Find class of enemy
-	TSubclassOf<AEnemyPawn> ClassType = EnemyToReturn->GetClass();
-
 	
-	PoolMap.FindOrAdd(ClassType).InactiveEnemies.Push(EnemyToReturn);
 }

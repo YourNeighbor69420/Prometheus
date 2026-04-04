@@ -45,6 +45,7 @@ public:
 
 	float Health;
 	
+	
 	UPROPERTY(EditAnywhere, Category = "Stats")
 	float MaxHealth = 100;
 

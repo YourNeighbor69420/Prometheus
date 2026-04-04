@@ -86,34 +86,48 @@ UBehaviorTree* AEnemyPawn::GetBehaviorTree()
 	return EnemyBehaviorTree;
 }
 
-void AEnemyPawn::Deactivate()
+bool AEnemyPawn::Deactivated()
 {
-	SetActorTickEnabled(false);
+	AliveComponents--;
 	
-	SetActorHiddenInGame(true);
-
-	SetActorEnableCollision(false);
-
-	AAIController* AiController = Cast<AAIController>(GetController());
-	if (AiController)
+	if (AliveComponents == 0)
 	{
-		AiController->StopMovement();
-		UBrainComponent* EnemyBrain = AiController->GetBrainComponent();
-		if (EnemyBrain)
-		{
-			EnemyBrain->StopLogic("Deactivated");
-			bIsAlive = false;
-			APrometheusCharacter* PlayerChar = Cast<APrometheusCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-			
-		}
-	}
+		SetActorTickEnabled(false);
+        	
+        	SetActorHiddenInGame(true);
+        
+        	SetActorEnableCollision(false);
+        
+        	AAIController* AiController = Cast<AAIController>(GetController());
+        	if (AiController)
+        	{
+        		AiController->StopMovement();
+        		UBrainComponent* EnemyBrain = AiController->GetBrainComponent();
+        		if (EnemyBrain)
+        		{
+        			EnemyBrain->StopLogic("Deactivated");
+        			bIsAlive = false;
+        			APrometheusCharacter* PlayerChar = Cast<APrometheusCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+        			
+        		}
+        	}
+        
+        	if (OwningArena)
+        	{
+        		OwningArena->ReportEnemyDeath();
+        
+        		OwningArena = nullptr;
+        	}
 
-	if (OwningArena)
+		return true;
+	}
+	else
 	{
-		OwningArena->ReportEnemyDeath();
-
-		OwningArena = nullptr;
+		
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Killed component"));
+		return false;
 	}
+	
 	
 }
 

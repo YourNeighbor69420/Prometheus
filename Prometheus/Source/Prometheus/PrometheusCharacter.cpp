@@ -122,6 +122,7 @@ void APrometheusCharacter::Tick(float DeltaTime)
 	if (!ViLocity.IsNearlyZero())
 	{
 		ViLocity = ViLocity * (1.f - (Drag * DeltaTime));
+		ViLocity = ViLocity.GetClampedToMaxSize(5000.f);
 		Damage = ViLocity.Size() / 10.f;
 		
 		FString DebugMsg = FString::Printf(TEXT("Velocity: %s | Speed: %f, damage : %f"), 
@@ -268,7 +269,7 @@ void APrometheusCharacter::DoJumpEnd()
 void APrometheusCharacter::MarkInput()
 {
 	//Check if the line trace hit a markable component and sets it as the current marked target
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Mark input" );
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Mark input" );
 	FHitResult Hit = LineTrace();
 
 	if (Hit.bBlockingHit)
@@ -286,7 +287,7 @@ void APrometheusCharacter::MarkInput()
 void APrometheusCharacter::AimInput()
 {
 	//Slow down the worlds time and change the FOV
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Aim input" );
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Aim input" );
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), TimeDilationFactor);
 	DesiredFOV = SlowMotionFOV;
 	CurrentSensitivity = AimSensitivity;
@@ -296,7 +297,7 @@ void APrometheusCharacter::AimInput()
 void APrometheusCharacter::AimReleaseInput()
 {
 	//Sets the worlds time and FOV back to normal
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Aim input" );
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Aim input" );
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
 	DesiredFOV = DefaultFOV;
 	CurrentSensitivity = DefaultSensitivity;
@@ -307,7 +308,7 @@ void APrometheusCharacter::AimReleaseInput()
 
 void APrometheusCharacter::AttackInput()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Attack input" );
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Attack input" );
 	if (PlayerSubsystem->GetMarkedTarget())
 	{
 		//Teleport behind the target
@@ -341,12 +342,12 @@ void APrometheusCharacter::Attack(UMarkableComponent* Target)
 
 void APrometheusCharacter::RestartInput()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Restart input" );
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Restart input" );
 }
 
 void APrometheusCharacter::DashInput()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash input" );
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash input" );
 
 	UMarkableComponent* MarkedTarget = PlayerSubsystem ? PlayerSubsystem->GetMarkedTarget(): nullptr;
 
@@ -422,8 +423,8 @@ void APrometheusCharacter::AttackTeleport(UMarkableComponent* Target)
 		GetCapsuleComponent()->IgnoreActorWhenMoving(EnemyActor, true);
 		//Teleport to the destination we have set while checking if we pass through anything
 		SetActorLocation(TeleportDestination, true);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f , FColor::Emerald, "teleported");
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, FString::Printf(TEXT("No collision on: %s"), *Target->GetOwner()->GetName()));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f , FColor::Emerald, "teleported");
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, FString::Printf(TEXT("No collision on: %s"), *Target->GetOwner()->GetName()));
 		//Re-enable collision on the player
 		GetCapsuleComponent()->IgnoreActorWhenMoving(EnemyActor, false);
 
