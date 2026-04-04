@@ -107,8 +107,7 @@ bool AEnemyPawn::Deactivated()
         		{
         			EnemyBrain->StopLogic("Deactivated");
         			bIsAlive = false;
-        			APrometheusCharacter* PlayerChar = Cast<APrometheusCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-        			
+        			AliveComponents = MaxAliveComponents;
         		}
         	}
         

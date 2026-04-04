@@ -114,6 +114,20 @@ void APrometheusCharacter::Tick(float DeltaTime)
 	
 	//AddMovementInput(Direction, 1.0f);
 
+	if (MoveInputRight != 0.0f)
+	{
+
+		float CurrentSpeed = ViLocity.Length();
+		
+		FVector RightVector = GetActorRightVector();
+		float SteeringPower = 150.f;
+
+		FVector SteeringNudge = (RightVector * MoveInputRight * SteeringPower * DeltaTime);
+		ViLocity += SteeringNudge;
+
+		ViLocity = ViLocity.GetSafeNormal() * CurrentSpeed;
+	}
+	
 	if (MusicAudioComponent && MusicAudioComponent->IsPlaying())
 	{
 		MusicAudioComponent->SetFloatParameter(FName("PlayerSpeed"), ViLocity.Size());
@@ -189,7 +203,7 @@ void APrometheusCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &APrometheusCharacter::DoJumpEnd);
 
 		// Moving
-		//EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APrometheusCharacter::MoveInput);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &APrometheusCharacter::MoveInput);
 
 		// Looking/Aiming
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APrometheusCharacter::LookInput);
@@ -219,8 +233,10 @@ void APrometheusCharacter::MoveInput(const FInputActionValue& Value)
 	// get the Vector2D move axis
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
+	MoveInputRight = MovementVector.X;
+	
 	// pass the axis values to the move input
-	DoMove(MovementVector.X, MovementVector.Y);
+	//DoMove(MovementVector.X, MovementVector.Y);
 
 }
 

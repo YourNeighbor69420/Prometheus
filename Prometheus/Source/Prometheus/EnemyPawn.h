@@ -54,8 +54,13 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	float AttackDamage= 1.f;
 
-	UPROPERTY(EditAnywhere, Category = "Health")
+	
 	int AliveComponents = 1;
+	
+	UPROPERTY(EditAnywhere, Category = "Health")
+	int MaxAliveComponents = 1;
+
+	
 	
 	UBehaviorTree* GetBehaviorTree();
 

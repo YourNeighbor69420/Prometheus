@@ -176,6 +176,8 @@ protected:
 
 	void DashToTarget(UMarkableComponent* Target);
 
+	float MoveInputRight = 0.0f;
+
 	//Custom speed vector
 	UPROPERTY(EditAnywhere, Category="Movement")
 	FVector ViLocity;
