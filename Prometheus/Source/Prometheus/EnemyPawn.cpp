@@ -107,7 +107,7 @@ bool AEnemyPawn::Deactivated()
         		{
         			EnemyBrain->StopLogic("Deactivated");
         			bIsAlive = false;
-        			AliveComponents = MaxAliveComponents;
+        			
         		}
         	}
         
@@ -146,6 +146,9 @@ void AEnemyPawn::Activate()
 		{
 			EnemyBrain->StartLogic();
 			bIsAlive = true;
+
+			AliveComponents = MaxAliveComponents;
+			OnReActivate();
 		}
 	}
 }

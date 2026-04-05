@@ -36,6 +36,7 @@ public:
 	virtual float GetExecuteSpeedReward_Implementation() override;
 	virtual float GetSpeedPenalty_Implementation() override;
 	virtual float GetDamageThreshold_Implementation() override;
+	virtual void ResetHealth_Implementation() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Visuals")
 	UWidgetComponent* MarkWidget;

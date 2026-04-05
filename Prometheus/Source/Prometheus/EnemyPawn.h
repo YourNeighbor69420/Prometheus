@@ -76,4 +76,7 @@ public:
 	bool bIsAlive = 0;
 
 	void SetOwningArena(AArenaManager* Arena) { OwningArena = Arena;}
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Pooling")
+	void OnReActivate();
 };

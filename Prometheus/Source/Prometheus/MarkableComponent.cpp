@@ -16,9 +16,7 @@ UMarkableComponent::UMarkableComponent()
 	MarkWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("MarkWidget"));
 	MarkWidget->SetupAttachment(this);
 
-	MarkWidget->SetVisibility(false);
-	MarkWidget->SetCachedMaxDrawDistance(true);
-	MarkWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	
 	
 	
 
@@ -34,7 +32,9 @@ void UMarkableComponent::BeginPlay()
 	Health = MaxHealth;
 	DamageThreshold = Health / 2;
 	// ...
-	
+	MarkWidget->SetVisibility(false);
+	MarkWidget->SetCachedMaxDrawDistance(true);
+	MarkWidget->SetWidgetSpace(EWidgetSpace::Screen);
 }
 
 
@@ -67,12 +67,13 @@ void UMarkableComponent::DealDamage_Implementation(float damage)
 {
 	IMarkingInterface::DealDamage_Implementation(damage);
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("damage dealt: %f"), damage));
-
+	
 	Health -= damage;
 	Health = FMath::Clamp(Health, 0, MaxHealth);
 	
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("enemy health: %f / %f"), Health, MaxHealth));
 
+	
 	if (Health == 0.f)
 	{
 		UEnemyPoolSubsystem* EnemyPoolSubsystem = GetWorld()->GetSubsystem<UEnemyPoolSubsystem>();
@@ -127,6 +128,13 @@ float UMarkableComponent::GetDamageThreshold_Implementation()
 	IMarkingInterface::GetDamageThreshold_Implementation();
 
 	return DamageThreshold;
+}
+
+void UMarkableComponent::ResetHealth_Implementation()
+{
+	IMarkingInterface::ResetHealth_Implementation();
+
+	Health = MaxHealth;
 }
 
 
