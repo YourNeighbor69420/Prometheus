@@ -4,6 +4,7 @@
 #include "MarkableComponent.h"
 
 #include "EnemyPoolSubsystem.h"
+#include "MovieSceneTracksComponentTypes.h"
 #include "Components/WidgetComponent.h"
 
 // Sets default values for this component's properties
@@ -19,9 +20,10 @@ UMarkableComponent::UMarkableComponent()
 	MarkWidget->SetVisibility(false);
 	MarkWidget->SetCachedMaxDrawDistance(true);
 	MarkWidget->SetWidgetSpace(EWidgetSpace::Screen);
-	
-	
 
+	
+	
+	
 	// ...
 }
 
@@ -34,7 +36,8 @@ void UMarkableComponent::BeginPlay()
 	Health = MaxHealth;
 	DamageThreshold = Health / 2;
 	// ...
-	
+
+	MarkWidget->AttachToComponent(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 }
 
 
