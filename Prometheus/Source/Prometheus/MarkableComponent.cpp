@@ -16,7 +16,9 @@ UMarkableComponent::UMarkableComponent()
 	MarkWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("MarkWidget"));
 	MarkWidget->SetupAttachment(this);
 
-	
+	MarkWidget->SetVisibility(false);
+	MarkWidget->SetCachedMaxDrawDistance(true);
+	MarkWidget->SetWidgetSpace(EWidgetSpace::Screen);
 	
 	
 
@@ -32,9 +34,7 @@ void UMarkableComponent::BeginPlay()
 	Health = MaxHealth;
 	DamageThreshold = Health / 2;
 	// ...
-	MarkWidget->SetVisibility(false);
-	MarkWidget->SetCachedMaxDrawDistance(true);
-	MarkWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	
 }
 
 
