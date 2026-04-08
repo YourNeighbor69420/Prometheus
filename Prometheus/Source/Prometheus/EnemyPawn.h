@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PrometheusCharacter.h"
 #include "GameFramework/Pawn.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "EnemyPawn.generated.h"
@@ -25,6 +26,12 @@ protected:
 	UPROPERTY()
 	AArenaManager* OwningArena;
 
+	UPROPERTY()
+	UMaterialInstanceDynamic* MaterialInstance;
+	
+	UPROPERTY()
+	APrometheusCharacter* PlayerRef;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -36,6 +43,8 @@ public:
 	void PerformAttack(AActor* TargetActor);
 
 	void ExecuteDamageCheck();
+	
+	TArray<UMarkableComponent*> AllMarkers;
 
 	UPROPERTY()
 	AActor* CurrentTargetActor;

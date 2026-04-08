@@ -9,8 +9,11 @@
 
 #include "MarkableComponent.generated.h"
 
+class UNiagaraSystem;
+class UNiagaraComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+
 class PROMETHEUS_API UMarkableComponent : public USphereComponent, public IMarkingInterface
 {
 	GENERATED_BODY()
@@ -38,6 +41,8 @@ public:
 	virtual float GetDamageThreshold_Implementation() override;
 	virtual void ResetHealth_Implementation() override;
 
+	void SetExecutableEffectActive(bool bIsEffectActive);
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Visuals")
 	UWidgetComponent* MarkWidget;
 
@@ -45,7 +50,6 @@ public:
 	float SpinSpeed = 90.f;
 
 	float Health;
-	
 	
 	UPROPERTY(EditAnywhere, Category = "Stats")
 	float MaxHealth = 100;
@@ -61,6 +65,13 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = "Stats")
 	float DamageThreshold;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visuals")
+	UNiagaraSystem* ExecutableEffectSystem;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Visuals")
+	UNiagaraComponent* ExecutableEffectComponent;
+
 	
 	
 };

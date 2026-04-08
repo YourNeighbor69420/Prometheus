@@ -23,6 +23,10 @@ void AEnemyPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	//PlayerRef = Cast<APrometheusCharacter>(GetWorld()->GetFirstPlayerController());
+	PlayerRef = Cast<APrometheusCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	
+	GetComponents<UMarkableComponent>(AllMarkers);
 }
 
 // Called every frame
@@ -41,6 +45,32 @@ void AEnemyPawn::Tick(float DeltaTime)
 
 		SetActorRotation(SmoothRotation);
 	}
+
+	if (PlayerRef)
+	{
+		for (UMarkableComponent* Marker : AllMarkers)
+		{
+			float CompHealth = Marker->GetHealth_Implementation();
+			float PlayerDamage = PlayerRef->GetDamage();
+
+			if (PlayerDamage >= CompHealth)
+			{
+				Marker->SetExecutableEffectActive(true);
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Silver, "Set effect ACTIVE");
+			}
+			else
+			{
+				Marker->SetExecutableEffectActive(false);
+			}
+		}
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Silver, "player ref doesnt work");
+
+	}
+	
+	
 
 }
 

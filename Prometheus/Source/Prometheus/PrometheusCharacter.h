@@ -150,6 +150,8 @@ protected:
 	//The teleport when attacking
 	void AttackTeleport(UMarkableComponent* Target);
 
+	
+
 	//What is currently marked
 	//TWeakObjectPtr<UMarkableComponent> CurrentMarkedTarget;
 
@@ -160,6 +162,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="UI Events")
 	TSubclassOf<UCameraShakeBase> DamageCameraShake; ;
+	
+	float GetDamage();
 	
 protected:
 
@@ -224,10 +228,6 @@ protected:
 	//How far the teleport goes
 	UPROPERTY(EditAnywhere, Category="Combat")
 	float TeleportDistance = 200.f;
-
-	
-
-	
 
 public:
 

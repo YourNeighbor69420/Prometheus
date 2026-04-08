@@ -451,6 +451,11 @@ void APrometheusCharacter::AttackTeleport(UMarkableComponent* Target)
 	
 }
 
+float APrometheusCharacter::GetDamage()
+{
+	return Damage;
+}
+
 void APrometheusCharacter::DashToTarget(UMarkableComponent* Target)
  {
 	 if (!Target) return;

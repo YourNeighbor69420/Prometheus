@@ -2,7 +2,8 @@
 
 
 #include "MarkableComponent.h"
-
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "EnemyPoolSubsystem.h"
 #include "MovieSceneTracksComponentTypes.h"
 #include "Components/WidgetComponent.h"
@@ -38,6 +39,15 @@ void UMarkableComponent::BeginPlay()
 	// ...
 
 	MarkWidget->AttachToComponent(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+
+	if (ExecutableEffectSystem)
+	{
+		ExecutableEffectComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(ExecutableEffectSystem, this, NAME_None, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget, false);
+		 if (ExecutableEffectComponent)
+		 {
+			 ExecutableEffectComponent->Deactivate();
+		 }
+	}
 }
 
 
@@ -139,5 +149,21 @@ void UMarkableComponent::ResetHealth_Implementation()
 
 	Health = MaxHealth;
 }
+
+void UMarkableComponent::SetExecutableEffectActive(bool bIsEffectActive)
+{
+	if (ExecutableEffectComponent)
+	{
+		if (bIsEffectActive && !ExecutableEffectComponent->IsActive())
+		{
+			ExecutableEffectComponent->Activate();
+		}
+		else if (!bIsEffectActive && ExecutableEffectComponent->IsActive())
+		{
+			ExecutableEffectComponent->Deactivate();
+		}
+	}
+}
+
 
 
