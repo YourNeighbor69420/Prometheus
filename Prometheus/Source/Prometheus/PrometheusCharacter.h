@@ -23,6 +23,7 @@ struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSpeedUpdated, float, SpeedPercentage, bool, bIsMaxSpeed);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
 
 /**
  *  A basic first person character
@@ -160,6 +161,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="UI Events")
 	FOnSpeedUpdated OnSpeedUpdated;
 
+	UPROPERTY(BlueprintAssignable, Category="UI Events")
+	FOnDeath OnDeath;
+	
 	UPROPERTY(EditDefaultsOnly, Category="UI Events")
 	TSubclassOf<UCameraShakeBase> DamageCameraShake; ;
 	
@@ -189,6 +193,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Movement UI")
 	float MaxUIViLocity = 5000.f;
 
+	UPROPERTY(EditAnywhere, Category="Movement")
+	float DeathSpeed = 0.100;
+	
 	float Damage;
 	
 	//Custom air resistance

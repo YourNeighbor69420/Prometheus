@@ -132,6 +132,11 @@ void APrometheusCharacter::Tick(float DeltaTime)
 	{
 		MusicAudioComponent->SetFloatParameter(FName("PlayerSpeed"), ViLocity.Size());
 	}
+
+	if (ViLocity.Length() <= DeathSpeed)
+	{
+		OnDeath.Broadcast();
+	}
 	
 	if (!ViLocity.IsNearlyZero())
 	{
