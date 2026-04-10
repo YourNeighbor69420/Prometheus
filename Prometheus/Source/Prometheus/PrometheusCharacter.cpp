@@ -17,6 +17,12 @@
 #include "Kismet/GameplayStatics.h"
 #include "Math/UnitConversion.h"
 
+void APrometheusCharacter::OnPlayerContact(UPrimitiveComponent* HitComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	OnDeath.Broadcast();
+}
+
 APrometheusCharacter::APrometheusCharacter()
 {
 	// Set size for collision capsule
@@ -72,6 +78,9 @@ void APrometheusCharacter::ApplyPlayerDamage_Implementation(float SpeedDebuff)
 void APrometheusCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &APrometheusCharacter::OnPlayerContact);
+
 	if (APlayerController* PC = Cast<APlayerController>(GetController()))
 	{
 		if (ULocalPlayer* LocalPlayer = PC->GetLocalPlayer())

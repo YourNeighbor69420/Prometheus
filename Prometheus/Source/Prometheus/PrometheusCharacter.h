@@ -58,8 +58,6 @@ protected:
 	/** Mouse Look Input Action */
 	UPROPERTY(EditAnywhere, Category ="Input")
 	class UInputAction* MouseLookAction;
-
-
 	
 	UPROPERTY(EditAnywhere, Category="Input")
 	class UInputAction* MarkAction;
@@ -81,6 +79,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Audio")
 	class UAudioComponent* MusicAudioComponent;
+
+	UFUNCTION()
+	void OnPlayerContact(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	
 public:
 	APrometheusCharacter();
