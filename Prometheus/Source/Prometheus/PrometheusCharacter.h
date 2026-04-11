@@ -167,6 +167,9 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category="UI Events")
 	TSubclassOf<UCameraShakeBase> DamageCameraShake; ;
+
+	UFUNCTION(BlueprintCallable, Category="Checkpoints")
+	void RespawnAtCheckpoint();
 	
 	float GetDamage();
 	

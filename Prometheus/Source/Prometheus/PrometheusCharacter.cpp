@@ -14,6 +14,7 @@
 #include "PlayerSubsystem.h"
 #include "MarkingInterface.h"
 #include "Prometheus.h"
+#include "PrometheusGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include "Math/UnitConversion.h"
 
@@ -108,6 +109,15 @@ void APrometheusCharacter::BeginPlay()
 	DesiredFOV = DefaultFOV;
 
 	CurrentSensitivity = DefaultSensitivity;
+
+
+	///////////Checkpoints///////////////
+
+	UPrometheusGameInstance* GameInstance = Cast<UPrometheusGameInstance>(GetGameInstance());
+	 if (GameInstance && GameInstance->bHasSavedCheckpoint)
+	 {
+		 SetActorLocationAndRotation(GameInstance->SavedLocation, GameInstance->SavedRotation, false, nullptr, ETeleportType::TeleportPhysics);
+	 }
 }
 
 void APrometheusCharacter::Tick(float DeltaTime)
@@ -463,6 +473,12 @@ void APrometheusCharacter::AttackTeleport(UMarkableComponent* Target)
 	}
 
 	
+}
+
+void APrometheusCharacter::RespawnAtCheckpoint()
+{
+	FName CurrentLevelName = FName(*GetWorld()->GetName());
+	UGameplayStatics::OpenLevel(this, CurrentLevelName);
 }
 
 float APrometheusCharacter::GetDamage()
