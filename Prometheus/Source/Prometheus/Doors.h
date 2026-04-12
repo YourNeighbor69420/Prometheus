@@ -26,7 +26,7 @@ protected:
 	UFUNCTION()
 	void UnlockDoor();
 
-	UPROPERTY(BlueprintReadWrite, category = "Doors")
+	UPROPERTY(EditAnywhere, category = "Doors")
 	AArenaManager* DoorsManager;
 
 public:	

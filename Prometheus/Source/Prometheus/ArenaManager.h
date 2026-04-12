@@ -61,6 +61,7 @@ protected:
 	
 	void StartPhase();
 
+	void EndArena();
 	
 public:	
 	// Called every frame
@@ -68,6 +69,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ReportEnemyDeath();
+
+	
 
 	FTimerHandle PhaseTimerHandle;
 

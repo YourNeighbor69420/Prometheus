@@ -35,6 +35,7 @@ void ADoors::BeginPlay()
 void ADoors::UnlockDoor()
 {
 	DoorsMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	DoorsMesh->SetVisibility(false);
 }
 
 // Called every frame

@@ -32,6 +32,8 @@ void AArenaManager::BeginPlay()
 void AArenaManager::OnPlayerEnter(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("WAVE CHECK -> CurrentIndex: %d | TotalPhases: %d"), CurrentPhaseIndex, ArenaPhases.Num()));
+
 	APrometheusCharacter*  Player = Cast<APrometheusCharacter>(OtherActor);
 	if (Player)
 	{
@@ -43,12 +45,7 @@ void AArenaManager::OnPlayerEnter(UPrimitiveComponent* OverlappedComponent, AAct
 
 void AArenaManager::StartPhase()
 {
-	if (ArenaPhases.IsEmpty() || CurrentPhaseIndex >= ArenaPhases.Num())
-	{
-		//Room Cleared
-		OnArenaFinished.Broadcast();
-		return;
-	}
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("WAVE CHECK -> CurrentIndex: %d | TotalPhases: %d"), CurrentPhaseIndex, ArenaPhases.Num()));
 
 	FArenaPhase& CurrentPhase = ArenaPhases[CurrentPhaseIndex];
 
@@ -67,6 +64,12 @@ void AArenaManager::StartPhase()
 			}
 		}
 	}
+}
+
+void AArenaManager::EndArena()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "arena dopne");
+	OnArenaFinished.Broadcast();
 }
 
 // Called every frame
@@ -92,9 +95,13 @@ void AArenaManager::ReportEnemyDeath()
 
 			GetWorld()->GetTimerManager().SetTimer(PhaseTimerHandle, this, &AArenaManager::StartPhase, Delay, false);
 		}
+		else if (ArenaPhases.IsEmpty() || CurrentPhaseIndex >= ArenaPhases.Num())
+		{
+			//Room Cleared
+			EndArena();
+			
+		}
 	}
-
-
 	
 }
 
