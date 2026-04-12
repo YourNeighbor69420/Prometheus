@@ -46,7 +46,7 @@ void AArenaManager::StartPhase()
 	if (ArenaPhases.IsEmpty() || CurrentPhaseIndex >= ArenaPhases.Num())
 	{
 		//Room Cleared
-		//UnlockDoor();
+		OnArenaFinished.Broadcast();
 		return;
 	}
 
