@@ -395,8 +395,10 @@ void APrometheusCharacter::DashInput()
 	
 	if (MarkedTarget)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash input" );
 		if (TargetEnemy->bIsAlive)
 		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash worked" );
 			DashToTarget(MarkedTarget);
 		}
 	}
