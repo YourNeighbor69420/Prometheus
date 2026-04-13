@@ -23,7 +23,9 @@ struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSpeedUpdated, float, SpeedPercentage, bool, bIsMaxSpeed);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInAttackRange, float, SkillCheckPercentage);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
+
 
 /**
  *  A basic first person character
@@ -164,6 +166,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="UI Events")
 	FOnDeath OnDeath;
+
+	UPROPERTY(BlueprintAssignable, Category="UI Events")
+	FOnInAttackRange OnInAttackRange;
 	
 	UPROPERTY(EditDefaultsOnly, Category="UI Events")
 	TSubclassOf<UCameraShakeBase> DamageCameraShake; ;
@@ -234,14 +239,31 @@ protected:
 
 	//How close the player needs to be to attack an enemy
 	UPROPERTY(EditAnywhere, Category="Combat")
-	float DistanceToAttack = 300.f;
+	float DistanceToAttack = 250.f;
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	float DistanceToSkillCheck = 500.f;
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	float MinimumDistance = 50.f;
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	float SkillCheckMinimum = 0.7;
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	float SkillCheckMaximum = 0.85;
 
 	//How far the teleport goes
 	UPROPERTY(EditAnywhere, Category="Combat")
 	float TeleportDistance = 200.f;
 
+	bool bInAttackRange = false;	
+
 public:
 
+	UFUNCTION(BlueprintPure, Category="Combat")
+	float GetSkillCheckProgress();
+	
 	/** Returns the first person mesh **/
 	USkeletalMeshComponent* GetFirstPersonMesh() const { return FirstPersonMesh; }
 
@@ -250,6 +272,8 @@ public:
 
 
 };
+
+
 
 
 

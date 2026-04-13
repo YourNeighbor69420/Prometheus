@@ -40,6 +40,11 @@ void UPlayerSubsystem::SetMarkedTarget(UMarkableComponent* NewMarkedTarget)
 
 }
 
+void UPlayerSubsystem::ClearMarkedTarget()
+{
+	CurrentMarkedTarget = nullptr;
+}
+
 UMarkableComponent* UPlayerSubsystem::GetMarkedTarget() const
 {
 	return CurrentMarkedTarget.Get();

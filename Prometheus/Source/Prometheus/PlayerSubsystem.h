@@ -24,6 +24,9 @@ public:
 	void SetMarkedTarget(UMarkableComponent* NewMarkedTarget);
 
 	UFUNCTION(BlueprintCallable)
+	void ClearMarkedTarget();
+
+	UFUNCTION(BlueprintCallable)
 	UMarkableComponent* GetMarkedTarget() const;
 
 	

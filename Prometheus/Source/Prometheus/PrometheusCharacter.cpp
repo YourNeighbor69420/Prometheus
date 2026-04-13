@@ -133,6 +133,17 @@ void APrometheusCharacter::Tick(float DeltaTime)
 	
 	//AddMovementInput(Direction, 1.0f);
 
+	if (UMarkableComponent* CurrentTarget = PlayerSubsystem->GetMarkedTarget())
+	{
+		float CurrentDistance = FVector::Distance(GetActorLocation(), CurrentTarget->GetComponentLocation());
+        	
+        	if (CurrentDistance <= DistanceToSkillCheck)
+        	{
+        		OnInAttackRange.Broadcast(GetSkillCheckProgress());
+        	}
+	}
+	
+
 	if (MoveInputRight != 0.0f)
 	{
 
@@ -366,6 +377,7 @@ void APrometheusCharacter::Attack(UMarkableComponent* Target)
 	{
 		ViLocity = ViLocity * Target->GetExecuteSpeedReward_Implementation();
 		Target->DealDamage_Implementation(Damage);
+		PlayerSubsystem->ClearMarkedTarget();
 	}
 	//If the damage isn't above half the enemy's current health, take a speed penalty
 	else if (Damage < Target->GetDamageThreshold_Implementation())
@@ -391,17 +403,20 @@ void APrometheusCharacter::DashInput()
 
 	UMarkableComponent* MarkedTarget = PlayerSubsystem ? PlayerSubsystem->GetMarkedTarget(): nullptr;
 
-	AEnemyPawn* TargetEnemy = Cast<AEnemyPawn>(MarkedTarget->GetOwner());
-	
-	if (MarkedTarget)
+	if (AEnemyPawn* TargetEnemy = Cast<AEnemyPawn>(MarkedTarget->GetOwner()))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash input" );
-		if (TargetEnemy->bIsAlive)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash worked" );
-			DashToTarget(MarkedTarget);
-		}
+		if (MarkedTarget)
+        	{
+        		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash input" );
+        		if (TargetEnemy->bIsAlive)
+        		{
+        			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash worked" );
+        			DashToTarget(MarkedTarget);
+        		}
+        	}
 	}
+	
+	
 }
 
 FHitResult APrometheusCharacter::LineTrace()
@@ -453,7 +468,11 @@ void APrometheusCharacter::AttackTeleport(UMarkableComponent* Target)
 	FVector TargetLocation = Target->GetComponentLocation();
 	float Distance = FVector::Dist(PlayerLocation, TargetLocation);
 
-	if (Distance < DistanceToAttack)
+	float CurrentProgress = GetSkillCheckProgress();
+
+	//Distance < DistanceToAttack
+	
+	if (CurrentProgress >= SkillCheckMinimum && CurrentProgress <= SkillCheckMaximum)
 	{
 		//Get the direction from the player to the enemy
 		FVector ApproachDirection = (TargetLocation - PlayerLocation).GetSafeNormal();
@@ -508,3 +527,14 @@ void APrometheusCharacter::DashToTarget(UMarkableComponent* Target)
 	MoveComp->Velocity = Direction * 1000.f;*/
 	
  }
+
+float APrometheusCharacter::GetSkillCheckProgress()
+{
+	UMarkableComponent* CurrentTarget = PlayerSubsystem->GetMarkedTarget();
+	float CurrentDistance = FVector::Distance(GetActorLocation(), CurrentTarget->GetComponentLocation());
+
+	FVector2D DistanceRange(DistanceToSkillCheck, MinimumDistance);
+	FVector2D UIRange(0.0f, 1.0f);
+
+	return FMath::GetMappedRangeValueClamped(DistanceRange, UIRange, CurrentDistance);
+}
