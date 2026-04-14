@@ -83,6 +83,7 @@ void UMarkableComponent::DealDamage_Implementation(float damage)
 	
 	Health -= damage;
 	Health = FMath::Clamp(Health, 0, MaxHealth);
+	SetVisibility(false, true);
 	
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("enemy health: %f / %f"), Health, MaxHealth));
 

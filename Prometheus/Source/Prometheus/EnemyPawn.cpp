@@ -162,6 +162,11 @@ bool AEnemyPawn::Deactivated()
 
 void AEnemyPawn::Activate()
 {
+	if (UMarkableComponent* MarkableComponent = GetComponentByClass<UMarkableComponent>())
+	{
+		MarkableComponent->SetVisibility(false);
+	}
+	
 	SetActorTickEnabled(true);
 	
 	SetActorHiddenInGame(false);
@@ -178,6 +183,7 @@ void AEnemyPawn::Activate()
 			bIsAlive = true;
 
 			AliveComponents = MaxAliveComponents;
+			
 			OnReActivate();
 		}
 	}

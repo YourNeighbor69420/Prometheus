@@ -369,7 +369,6 @@ void APrometheusCharacter::AttackInput()
 
 void APrometheusCharacter::Attack(UMarkableComponent* Target)
 {
-	
 	//AttackTeleport(Target);
 
 	//If the damage can kill the enemy, execute it and give a large speed reward
@@ -377,7 +376,6 @@ void APrometheusCharacter::Attack(UMarkableComponent* Target)
 	{
 		ViLocity = ViLocity * Target->GetExecuteSpeedReward_Implementation();
 		Target->DealDamage_Implementation(Damage);
-		PlayerSubsystem->ClearMarkedTarget();
 	}
 	//If the damage isn't above half the enemy's current health, take a speed penalty
 	else if (Damage < Target->GetDamageThreshold_Implementation())
@@ -390,6 +388,9 @@ void APrometheusCharacter::Attack(UMarkableComponent* Target)
 		ViLocity = ViLocity * Target->GetSpeedReward_Implementation();
 		Target->DealDamage_Implementation(Damage);
 	}
+	PlayerSubsystem->ClearMarkedTarget();
+
+	
 }
 
 void APrometheusCharacter::RestartInput()
@@ -401,20 +402,27 @@ void APrometheusCharacter::DashInput()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash input" );
 
-	UMarkableComponent* MarkedTarget = PlayerSubsystem ? PlayerSubsystem->GetMarkedTarget(): nullptr;
-
-	if (AEnemyPawn* TargetEnemy = Cast<AEnemyPawn>(MarkedTarget->GetOwner()))
+	if (UMarkableComponent* MarkedTarget = PlayerSubsystem->GetMarkedTarget())
 	{
-		if (MarkedTarget)
+		if (AEnemyPawn* TargetEnemy = Cast<AEnemyPawn>(MarkedTarget->GetOwner()))
         	{
-        		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash input" );
-        		if (TargetEnemy->bIsAlive)
-        		{
-        			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash worked" );
-        			DashToTarget(MarkedTarget);
-        		}
+        		if (MarkedTarget)
+                	{
+                		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash input" );
+                		if (TargetEnemy->bIsAlive)
+                		{
+                			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash worked" );
+                			DashToTarget(MarkedTarget);
+                		}
+                	}
         	}
 	}
+	else
+	{
+		MarkedTarget = nullptr;
+	}
+
+	
 	
 	
 }
