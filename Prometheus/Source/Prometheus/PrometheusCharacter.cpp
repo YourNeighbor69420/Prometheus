@@ -171,7 +171,7 @@ void APrometheusCharacter::Tick(float DeltaTime)
 	if (!ViLocity.IsNearlyZero())
 	{
 		ViLocity = ViLocity * (1.f - (Drag * DeltaTime));
-		ViLocity = ViLocity.GetClampedToMaxSize(5000.f);
+		ViLocity = ViLocity.GetClampedToMaxSize(MaxViLocity);
 		Damage = ViLocity.Size() / 10.f;
 		
 		FString DebugMsg = FString::Printf(TEXT("Velocity: %s | Speed: %f, damage : %f"), 
@@ -185,11 +185,11 @@ void APrometheusCharacter::Tick(float DeltaTime)
 			ViLocity = FVector::ZeroVector;
 		}*/
 
-		if (MaxUIViLocity > 0.0f)
+		if (MaxViLocity > 0.0f)
 		{
 			float CurrentSpeed = ViLocity.Size();
 
-			float Percentage = FMath::Clamp(CurrentSpeed / MaxUIViLocity, 0.0f, 1.0f);
+			float Percentage = FMath::Clamp(CurrentSpeed / MaxViLocity, 0.0f, 1.0f);
 
 			bool bIsMaxSpeed = (Percentage >= 0.99f);
 
@@ -482,26 +482,52 @@ void APrometheusCharacter::AttackTeleport(UMarkableComponent* Target)
 	
 	if (CurrentProgress >= SkillCheckMinimum && CurrentProgress <= SkillCheckMaximum)
 	{
+		OnSkillCheckSucceed.Broadcast();
+
+		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+		
+		OriginalViLocity = ViLocity;
+		OriginalMaxViLocity = MaxViLocity;
+		OriginalDamage = Damage;
+		
+		MaxViLocity = DashSpeed;
+		ViLocity = ViLocity * DashSpeed;
+	
+		;
+		
 		//Get the direction from the player to the enemy
-		FVector ApproachDirection = (TargetLocation - PlayerLocation).GetSafeNormal();
+		//FVector ApproachDirection = (TargetLocation - PlayerLocation).GetSafeNormal();
+		
 		//Start at the enemy and teleport the teleport distance
-		FVector TeleportDestination = TargetLocation + (ApproachDirection * TeleportDistance);
+		//FVector TeleportDestination = TargetLocation + (ApproachDirection * TeleportDistance);
+		
 		AActor* EnemyActor = Target->GetOwner();
 
 		//Ignore the enemy actor when teleporting as to not collide with them
 		GetCapsuleComponent()->IgnoreActorWhenMoving(EnemyActor, true);
+		
 		//Teleport to the destination we have set while checking if we pass through anything
-		SetActorLocation(TeleportDestination, true);
+		//SetActorLocation(TeleportDestination, true);
+		DashTimerDelegate.BindUObject(this, &APrometheusCharacter::EndAttack, Target);
+		
+		GetWorld()->GetTimerManager().SetTimer(DashTimerHandle, DashTimerDelegate, DashTimeLength, false);
+		
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f , FColor::Emerald, "teleported");
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, FString::Printf(TEXT("No collision on: %s"), *Target->GetOwner()->GetName()));
 		//Re-enable collision on the player
 		GetCapsuleComponent()->IgnoreActorWhenMoving(EnemyActor, false);
-
-		Attack(Target);
-
 	}
+}
 
+void APrometheusCharacter::EndAttack(UMarkableComponent* Target)
+{
+	MaxViLocity = OriginalMaxViLocity;
+	ViLocity = OriginalViLocity;
+	Damage = OriginalDamage;
+
+	Attack(Target);
 	
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 }
 
 void APrometheusCharacter::RespawnAtCheckpoint()

@@ -25,6 +25,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSpeedUpdated, float, SpeedPercentage, bool, bIsMaxSpeed);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInAttackRange, float, SkillCheckPercentage);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSkillCheckSucceed);
 
 
 /**
@@ -154,6 +155,9 @@ protected:
 	//The teleport when attacking
 	void AttackTeleport(UMarkableComponent* Target);
 
+	UFUNCTION()
+	void EndAttack(UMarkableComponent* Target);
+
 	
 
 	//What is currently marked
@@ -169,12 +173,17 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="UI Events")
 	FOnInAttackRange OnInAttackRange;
+
+	UPROPERTY(BlueprintAssignable, Category="UI Events")
+	FOnSkillCheckSucceed OnSkillCheckSucceed;
 	
 	UPROPERTY(EditDefaultsOnly, Category="UI Events")
 	TSubclassOf<UCameraShakeBase> DamageCameraShake; ;
 
 	UFUNCTION(BlueprintCallable, Category="Checkpoints")
 	void RespawnAtCheckpoint();
+
+	
 	
 	float GetDamage();
 	
@@ -195,12 +204,29 @@ protected:
 
 	float MoveInputRight = 0.0f;
 
+	
 	//Custom speed vector
 	UPROPERTY(EditAnywhere, Category="Movement")
 	FVector ViLocity;
 	
 	UPROPERTY(EditAnywhere, Category="Movement UI")
-	float MaxUIViLocity = 5000.f;
+	float MaxViLocity = 5000.f;
+
+	UPROPERTY(EditAnywhere, Category="Movement")
+	float DashSpeed = 20000.f;
+
+	UPROPERTY(EditAnywhere, Category="Movement")
+	float DashTimeLength = 0.2f;
+
+	FVector OriginalViLocity;
+
+	float OriginalMaxViLocity;
+
+	float OriginalDamage;
+
+	FTimerHandle DashTimerHandle;
+
+	FTimerDelegate DashTimerDelegate;
 
 	UPROPERTY(EditAnywhere, Category="Movement")
 	float DeathSpeed = 0.100;
@@ -256,7 +282,7 @@ protected:
 	//How far the teleport goes
 	UPROPERTY(EditAnywhere, Category="Combat")
 	float TeleportDistance = 200.f;
-
+	
 	bool bInAttackRange = false;	
 
 public:
