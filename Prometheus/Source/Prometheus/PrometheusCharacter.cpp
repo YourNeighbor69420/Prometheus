@@ -13,6 +13,7 @@
 #include "Components/AudioComponent.h"
 #include "PlayerSubsystem.h"
 #include "MarkingInterface.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Prometheus.h"
 #include "PrometheusGameInstance.h"
 #include "Kismet/GameplayStatics.h"
@@ -495,7 +496,10 @@ void APrometheusCharacter::AttackTeleport(UMarkableComponent* Target)
 		MaxViLocity = DashSpeed;
 		ViLocity = ViLocity * DashSpeed;
 	
-		;
+		if ( AttackEffect)
+		{
+			UNiagaraFunctionLibrary::SpawnSystemAttached(AttackEffect, GetRootComponent(), NAME_None, FVector(0.f), FRotator(0.f, 90.f, 0.f), EAttachLocation::KeepRelativeOffset, true);
+		}
 		
 		//Get the direction from the player to the enemy
 		//FVector ApproachDirection = (TargetLocation - PlayerLocation).GetSafeNormal();

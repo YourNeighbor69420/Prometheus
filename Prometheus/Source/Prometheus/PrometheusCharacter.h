@@ -19,6 +19,7 @@ class UInputComponent;
 class USkeletalMeshComponent;
 class UCameraComponent;
 class UInputAction;
+class UNiagaraSystem;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -184,8 +185,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="UI Events")
 	TSubclassOf<UCameraShakeBase> DamageCameraShake; ;
 
+	UPROPERTY(EditDefaultsOnly, Category="UI Events")
+	UNiagaraSystem* AttackEffect;
 	
-
 	UFUNCTION(BlueprintCallable, Category="Checkpoints")
 	void RespawnAtCheckpoint();
 
@@ -293,6 +295,8 @@ protected:
 
 public:
 
+	
+
 	UFUNCTION(BlueprintPure, Category="Combat")
 	float GetSkillCheckProgress();
 	
@@ -301,6 +305,8 @@ public:
 
 	/** Returns first person camera component **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+	
 
 
 };
