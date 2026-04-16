@@ -498,7 +498,7 @@ void APrometheusCharacter::AttackTeleport(UMarkableComponent* Target)
 	
 		if ( AttackEffect)
 		{
-			UNiagaraFunctionLibrary::SpawnSystemAttached(AttackEffect, GetRootComponent(), NAME_None, FVector(0.f), FRotator(0.f, 90.f, 0.f), EAttachLocation::KeepRelativeOffset, true);
+			UNiagaraFunctionLibrary::SpawnSystemAttached(AttackEffect, GetRootComponent(), NAME_None, FVector(0.f, 0.f, 0.f), FRotator(0.f, 90.f, 0.f), EAttachLocation::KeepRelativeOffset, true);
 		}
 		
 		//Get the direction from the player to the enemy
