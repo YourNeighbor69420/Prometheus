@@ -323,6 +323,7 @@ void APrometheusCharacter::MarkInput()
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Mark input" );
 	FHitResult Hit = LineTrace();
 
+	
 	if (Hit.bBlockingHit)
 	{
 		if (UMarkableComponent* HitComponent = Cast<UMarkableComponent>(Hit.GetComponent()))
@@ -330,6 +331,7 @@ void APrometheusCharacter::MarkInput()
 			if (PlayerSubsystem)
 			{
 				PlayerSubsystem->SetMarkedTarget(HitComponent);
+				OnEnemyMark.Broadcast();
 			}
 		}
 	}
@@ -452,7 +454,7 @@ FHitResult APrometheusCharacter::LineTrace()
 		//Line trace and return data as Hit
 		bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, Params);
 		//Show line trace visually
-		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 5.0f);
+		//DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 5.0f);
 
 		//If hitting actor, check components to see if they implement marking, if so call function
 		if (bHit)

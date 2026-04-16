@@ -26,6 +26,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSpeedUpdated, float, SpeedPercen
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInAttackRange, float, SkillCheckPercentage);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSkillCheckSucceed);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEnemyMark);
 
 
 /**
@@ -176,9 +177,14 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="UI Events")
 	FOnSkillCheckSucceed OnSkillCheckSucceed;
+
+	UPROPERTY(BlueprintAssignable, Category="Animations")
+	FOnEnemyMark OnEnemyMark;
 	
 	UPROPERTY(EditDefaultsOnly, Category="UI Events")
 	TSubclassOf<UCameraShakeBase> DamageCameraShake; ;
+
+	
 
 	UFUNCTION(BlueprintCallable, Category="Checkpoints")
 	void RespawnAtCheckpoint();
