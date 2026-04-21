@@ -135,6 +135,18 @@ void APrometheusCharacter::Tick(float DeltaTime)
 	
 	//AddMovementInput(Direction, 1.0f);
 
+	if (FirstPersonCameraComponent)
+	{
+		FVector2d SpeedRange(0.0f, MaxViLocity);
+		FVector2D FOVRange(DefaultFOV, MaxSpeedFOV);
+
+		float TargetFOV = FMath::GetMappedRangeValueClamped(SpeedRange, FOVRange, ViLocity.Length());
+
+		float SmoothedFOV = FMath::FInterpTo(FirstPersonCameraComponent->FieldOfView, TargetFOV, DeltaTime, FOVZoomSpeed);
+
+		FirstPersonCameraComponent->SetFieldOfView(SmoothedFOV);
+	}
+	
 	if (UMarkableComponent* CurrentTarget = PlayerSubsystem->GetMarkedTarget())
 	{
 		float CurrentDistance = FVector::Distance(GetActorLocation(), CurrentTarget->GetComponentLocation());
@@ -181,7 +193,7 @@ void APrometheusCharacter::Tick(float DeltaTime)
 				ViLocity.Size(),
 				Damage);
 		
-		GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, DebugMsg);
+		//GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, DebugMsg);
 		/*if (ViLocity.SizeSquared() < 1000.f)
 		{
 			ViLocity = FVector::ZeroVector;

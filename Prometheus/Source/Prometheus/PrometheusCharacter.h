@@ -295,7 +295,11 @@ protected:
 
 public:
 
-	
+	UPROPERTY(EditAnywhere, Category="Camera")
+	float MaxSpeedFOV = 120.f;
+
+	UPROPERTY(EditAnywhere, Category="Camera")
+	float FOVZoomSpeed = 10.f;
 
 	UFUNCTION(BlueprintPure, Category="Combat")
 	float GetSkillCheckProgress();

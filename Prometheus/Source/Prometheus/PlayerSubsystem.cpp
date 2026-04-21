@@ -31,11 +31,11 @@ void UPlayerSubsystem::SetMarkedTarget(UMarkableComponent* NewMarkedTarget)
 	if (NewMarkedTarget)
 	{
 		IMarkingInterface::Execute_OnMarked(NewMarkedTarget);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, FString::Printf(TEXT("Target Successfully marked: %s"), *NewMarkedTarget->GetName()));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, FString::Printf(TEXT("Target Successfully marked: %s"), *NewMarkedTarget->GetName()));
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, "BADDDDD");
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Purple, "BADDDDD");
 	}
 
 }
