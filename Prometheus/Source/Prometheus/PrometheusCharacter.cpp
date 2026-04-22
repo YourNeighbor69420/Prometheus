@@ -392,6 +392,7 @@ void APrometheusCharacter::Attack(UMarkableComponent* Target)
 	{
 		ViLocity = ViLocity * Target->GetExecuteSpeedReward_Implementation();
 		Target->DealDamage_Implementation(Damage);
+		OnEnemyExecute.Broadcast();
 	}
 	//If the damage isn't above half the enemy's current health, take a speed penalty
 	else if (Damage < Target->GetDamageThreshold_Implementation())

@@ -28,6 +28,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInAttackRange, float, SkillCheckP
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSkillCheckSucceed);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEnemyMark);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEnemyExecute);
 
 
 /**
@@ -181,6 +182,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="Animations")
 	FOnEnemyMark OnEnemyMark;
+
+	UPROPERTY(BlueprintAssignable, Category="Animations")
+	FOnEnemyExecute OnEnemyExecute;
 	
 	UPROPERTY(EditDefaultsOnly, Category="UI Events")
 	TSubclassOf<UCameraShakeBase> DamageCameraShake; ;
