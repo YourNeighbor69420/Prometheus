@@ -82,6 +82,13 @@ void APrometheusCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+
+	if (SpeedBlurMaterial && FirstPersonCameraComponent)
+	{
+		SpeedBlurMaterialInstance = UMaterialInstanceDynamic::Create(SpeedBlurMaterial, this);
+
+		FirstPersonCameraComponent->AddOrUpdateBlendable(SpeedBlurMaterialInstance, 1.0f);
+	}
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &APrometheusCharacter::OnPlayerContact);
 
 	if (APlayerController* PC = Cast<APlayerController>(GetController()))
@@ -145,6 +152,15 @@ void APrometheusCharacter::Tick(float DeltaTime)
 		float SmoothedFOV = FMath::FInterpTo(FirstPersonCameraComponent->FieldOfView, TargetFOV, DeltaTime, FOVZoomSpeed);
 
 		FirstPersonCameraComponent->SetFieldOfView(SmoothedFOV);
+
+		if (SpeedBlurMaterialInstance)
+		{
+			FVector2d BlurRange(0.0f, MaxBlurIntensity);
+
+			float TargetBlur = FMath::GetMappedRangeValueClamped(SpeedRange, BlurRange, ViLocity.Length());
+
+			SpeedBlurMaterialInstance->SetScalarParameterValue(FName("BlurIntensity"), TargetBlur);
+		}
 	}
 	
 	if (UMarkableComponent* CurrentTarget = PlayerSubsystem->GetMarkedTarget())

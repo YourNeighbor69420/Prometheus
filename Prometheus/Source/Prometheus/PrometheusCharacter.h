@@ -88,12 +88,21 @@ protected:
 
 	UFUNCTION()
 	void OnPlayerContact(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-	
+
 public:
 	APrometheusCharacter();
 
 	virtual void ApplyPlayerDamage_Implementation(float SpeedDebuff) override;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Camera");
+	UMaterialInterface* SpeedBlurMaterial;
 
+	UPROPERTY()
+	UMaterialInstanceDynamic* SpeedBlurMaterialInstance;
+
+	UPROPERTY(EditAnywhere, Category = "Camera");
+	float MaxBlurIntensity = 0.05f;
+	
 protected:
 	void BeginPlay() override;
 
