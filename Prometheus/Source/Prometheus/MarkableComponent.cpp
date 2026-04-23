@@ -64,14 +64,14 @@ void UMarkableComponent::OnMarked_Implementation()
 	IMarkingInterface::OnMarked_Implementation();
 
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, "Marked Component");
-	MarkWidget->SetVisibility(true);
+	MarkWidget->SetVisibility(true, true);
 }
 
 void UMarkableComponent::OnUnMarked_Implementation()
 {
 	IMarkingInterface::OnUnMarked_Implementation();
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, "UnMarked Component");
-	MarkWidget->SetVisibility(false);
+	MarkWidget->SetVisibility(false, true);
 
 
 }
@@ -83,9 +83,9 @@ void UMarkableComponent::DealDamage_Implementation(float damage)
 	
 	Health -= damage;
 	Health = FMath::Clamp(Health, 0, MaxHealth);
-	SetVisibility(false, true);
 	
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("enemy health: %f / %f"), Health, MaxHealth));
+	MarkWidget->SetVisibility(false, true);
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("enemy health: %f / %f"), Health, MaxHealth));
 
 	
 	if (Health == 0.f)

@@ -414,6 +414,7 @@ void APrometheusCharacter::Attack(UMarkableComponent* Target)
 	else if (Damage < Target->GetDamageThreshold_Implementation())
 	{
 		ViLocity = ViLocity * Target->GetSpeedPenalty_Implementation();
+		Target->DealDamage_Implementation(Damage);
 	}
 	//If you didn't kill it instantly and did do more than half its health, deal damage and get a normal speed reward
 	else
