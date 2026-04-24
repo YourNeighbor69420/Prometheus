@@ -25,6 +25,7 @@ struct FInputActionValue;
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSpeedUpdated, float, SpeedPercentage, bool, bIsMaxSpeed);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInAttackRange, float, SkillCheckPercentage);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAimCooldownUpdate, float, AimCooldownPercentage);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSkillCheckSucceed);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEnemyMark);
@@ -176,6 +177,9 @@ protected:
 	//TWeakObjectPtr<UMarkableComponent> CurrentMarkedTarget;
 
 public:
+
+	UPROPERTY(BlueprintAssignable,Category = "UI Events")
+	FOnAimCooldownUpdate OnAimCooldownUpdate;
 	
 	UPROPERTY(BlueprintAssignable, Category="UI Events")
 	FOnSpeedUpdated OnSpeedUpdated;
@@ -306,12 +310,7 @@ protected:
 	
 	bool bInAttackRange = false;
 
-	bool bAimCooldown = false;
 
-	UPROPERTY(EditAnywhere, Category="Combat")
-	float AimCooldownLength = 1.f;
-
-	FTimerHandle AimCooldownTimerHandle;
 
 	void TurnOffAimCooldown();
 
@@ -341,7 +340,15 @@ public:
 
 	UPROPERTY(EditAnywhere, Category="Aiming")
 	float SpeedDrainRate = 1.f;
-	
+
+	bool bAimCooldown = false;
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	float AimCooldownLength = 1.f;
+
+	float CurrentCooldownTime = 0.0f;
+
+	FTimerHandle AimCooldownTimerHandle;
 	
 };
 

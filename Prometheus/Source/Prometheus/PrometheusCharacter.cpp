@@ -150,6 +150,20 @@ void APrometheusCharacter::Tick(float DeltaTime)
 			ViLocity = ViLocity * (1.f - (SpeedDrainRate * DeltaTime));
 		}
 	}
+	else if (bIsAiming == false && bAimCooldown == true)
+	{
+		CurrentCooldownTime += DeltaTime;
+
+		float CooldownPercentage = CurrentCooldownTime / AimCooldownLength;
+
+		OnAimCooldownUpdate.Broadcast(CooldownPercentage);
+
+		if (CurrentCooldownTime >= AimCooldownLength)
+		{
+			bAimCooldown = false;
+			CurrentCooldownTime = 0.0f;
+		}
+	}
 
 	if (FirstPersonCameraComponent)
 	{
@@ -398,8 +412,8 @@ void APrometheusCharacter::AimReleaseInput()
 {
 	//Sets the worlds time and FOV back to normal
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Aim input" );
-	bIsAiming = false;
-	CurrentAimTime = 0.f;
+	
+	
 	
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
 	DesiredFOV = DefaultFOV;
@@ -407,7 +421,9 @@ void APrometheusCharacter::AimReleaseInput()
 
 	if (bAimCooldown == false)
 	{
-		GetWorld()->GetTimerManager().SetTimer(AimCooldownTimerHandle, this, &APrometheusCharacter::TurnOffAimCooldown, AimCooldownLength, false);
+		bIsAiming = false;
+     	CurrentAimTime = 0.f;
+		//GetWorld()->GetTimerManager().SetTimer(AimCooldownTimerHandle, this, &APrometheusCharacter::TurnOffAimCooldown, AimCooldownLength, false);
 		bAimCooldown = true;
 	}
 	
