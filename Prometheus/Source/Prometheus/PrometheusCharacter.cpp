@@ -141,6 +141,15 @@ void APrometheusCharacter::Tick(float DeltaTime)
 	}*/
 	
 	//AddMovementInput(Direction, 1.0f);
+	if (bIsAiming)
+	{
+		CurrentAimTime += DeltaTime;
+
+		if (CurrentAimTime > MaxSafeAimTime)
+		{
+			ViLocity = ViLocity * (1.f - (SpeedDrainRate * DeltaTime));
+		}
+	}
 
 	if (FirstPersonCameraComponent)
 	{
@@ -371,9 +380,17 @@ void APrometheusCharacter::AimInput()
 {
 	//Slow down the worlds time and change the FOV
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Aim input" );
-	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), TimeDilationFactor);
-	DesiredFOV = SlowMotionFOV;
-	CurrentSensitivity = AimSensitivity;
+	
+	
+	if (bAimCooldown == false)
+	{
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), TimeDilationFactor);
+		DesiredFOV = SlowMotionFOV;
+		CurrentSensitivity = AimSensitivity;
+		
+		bIsAiming = true;
+	}
+	
 	//GetFirstPersonCameraComponent()->FieldOfView = SlowMotionFOV;
 }
 
@@ -381,9 +398,19 @@ void APrometheusCharacter::AimReleaseInput()
 {
 	//Sets the worlds time and FOV back to normal
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Aim input" );
+	bIsAiming = false;
+	CurrentAimTime = 0.f;
+	
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
 	DesiredFOV = DefaultFOV;
 	CurrentSensitivity = DefaultSensitivity;
+
+	if (bAimCooldown == false)
+	{
+		GetWorld()->GetTimerManager().SetTimer(AimCooldownTimerHandle, this, &APrometheusCharacter::TurnOffAimCooldown, AimCooldownLength, false);
+		bAimCooldown = true;
+	}
+	
 	//GetFirstPersonCameraComponent()->FieldOfView = DefaultFOV;
 
 	
@@ -598,6 +625,11 @@ void APrometheusCharacter::DashToTarget(UMarkableComponent* Target)
 	MoveComp->Velocity = Direction * 1000.f;*/
 	
  }
+
+void APrometheusCharacter::TurnOffAimCooldown()
+{
+	bAimCooldown = false;
+}
 
 float APrometheusCharacter::GetSkillCheckProgress()
 {

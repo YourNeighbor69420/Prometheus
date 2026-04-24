@@ -304,7 +304,16 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Combat")
 	float TeleportDistance = 200.f;
 	
-	bool bInAttackRange = false;	
+	bool bInAttackRange = false;
+
+	bool bAimCooldown = false;
+
+	UPROPERTY(EditAnywhere, Category="Combat")
+	float AimCooldownLength = 1.f;
+
+	FTimerHandle AimCooldownTimerHandle;
+
+	void TurnOffAimCooldown();
 
 public:
 
@@ -323,9 +332,17 @@ public:
 	/** Returns first person camera component **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+	bool bIsAiming = false;
+
+	float CurrentAimTime = 0.0f;
+
+	UPROPERTY(EditAnywhere, Category= "Aiming")
+	float MaxSafeAimTime = 2.0f;
+
+	UPROPERTY(EditAnywhere, Category="Aiming")
+	float SpeedDrainRate = 1.f;
 	
-
-
+	
 };
 
 
