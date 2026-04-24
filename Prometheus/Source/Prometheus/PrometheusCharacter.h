@@ -30,6 +30,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSkillCheckSucceed);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEnemyMark);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEnemyExecute);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSpeedDrain);
 
 
 /**
@@ -192,12 +193,16 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="UI Events")
 	FOnSkillCheckSucceed OnSkillCheckSucceed;
-
+	
+	UPROPERTY(BlueprintAssignable, Category="UI Events")
+	FOnSpeedDrain OnSpeedDrain;
+	
 	UPROPERTY(BlueprintAssignable, Category="Animations")
 	FOnEnemyMark OnEnemyMark;
 
 	UPROPERTY(BlueprintAssignable, Category="Animations")
 	FOnEnemyExecute OnEnemyExecute;
+
 	
 	UPROPERTY(EditDefaultsOnly, Category="UI Events")
 	TSubclassOf<UCameraShakeBase> DamageCameraShake; ;

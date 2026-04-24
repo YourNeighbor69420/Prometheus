@@ -148,6 +148,8 @@ void APrometheusCharacter::Tick(float DeltaTime)
 		if (CurrentAimTime > MaxSafeAimTime)
 		{
 			ViLocity = ViLocity * (1.f - (SpeedDrainRate * DeltaTime));
+			
+			OnSpeedDrain.Broadcast();
 		}
 	}
 	else if (bIsAiming == false && bAimCooldown == true)
