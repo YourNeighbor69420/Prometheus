@@ -90,10 +90,12 @@ void UMarkableComponent::DealDamage_Implementation(float damage)
 	
 	if (Health == 0.f)
 	{
+		Deactivate();
+		
 		UEnemyPoolSubsystem* EnemyPoolSubsystem = GetWorld()->GetSubsystem<UEnemyPoolSubsystem>();
 		if (EnemyPoolSubsystem)
 		{
-
+			
 			AActor* OwnerActor = GetOwner();
 			AEnemyPawn* EnemyPawn = Cast<AEnemyPawn>(OwnerActor);
 			EnemyPoolSubsystem->ReturnEnemy(EnemyPawn);
@@ -164,6 +166,21 @@ void UMarkableComponent::SetExecutableEffectActive(bool bIsEffectActive)
 			ExecutableEffectComponent->Deactivate();
 		}
 	}
+}
+
+void UMarkableComponent::Deactivate()
+{
+	Super::Deactivate();
+
+	SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	ExecutableEffectComponent->Deactivate();
+	
+}
+
+void UMarkableComponent::Activate()
+{
+	SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
 }
 
 

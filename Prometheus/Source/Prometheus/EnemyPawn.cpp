@@ -166,12 +166,18 @@ void AEnemyPawn::Activate()
 	{
 		MarkableComponent->SetVisibility(false);
 	}
-	
+
+	for (UMarkableComponent* Marker : AllMarkers)
+	{
+		Marker->Activate();
+	}
 	SetActorTickEnabled(true);
 	
 	SetActorHiddenInGame(false);
 
 	SetActorEnableCollision(true);
+
+	
 	
 	AAIController* AiController = Cast<AAIController>(GetController());
 	if (AiController)

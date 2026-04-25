@@ -42,6 +42,9 @@ public:
 	virtual void ResetHealth_Implementation() override;
 
 	void SetExecutableEffectActive(bool bIsEffectActive);
+
+	void Deactivate() override;
+	void Activate();
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Visuals")
 	UWidgetComponent* MarkWidget;
