@@ -43,7 +43,7 @@ public:
 
 	void SetExecutableEffectActive(bool bIsEffectActive);
 
-	void Deactivate() override;
+	virtual void Deactivate() override;
 	void Activate();
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Visuals")
