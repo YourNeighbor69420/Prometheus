@@ -126,6 +126,13 @@ void APrometheusCharacter::BeginPlay()
 	 if (GameInstance && GameInstance->bHasSavedCheckpoint)
 	 {
 		 SetActorLocationAndRotation(GameInstance->SavedLocation, GameInstance->SavedRotation, false, nullptr, ETeleportType::TeleportPhysics);
+
+	 	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	 	{
+	 		PC->SetControlRotation(GameInstance->SavedRotation);
+	 		ViLocity = GameInstance->SavedRotation.Vector() * InitialLaunchSpeed;
+	 		
+	 	}
 	 }
 }
 
