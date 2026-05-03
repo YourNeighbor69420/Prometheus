@@ -80,6 +80,9 @@ public:
 	bool Deactivated();
 	
 	UFUNCTION(BlueprintCallable, Category = "Pooling")
+	void FullyDeactivate();
+	
+	UFUNCTION(BlueprintCallable, Category = "Pooling")
 	virtual void Activate();
 
 	bool bIsAlive = true;

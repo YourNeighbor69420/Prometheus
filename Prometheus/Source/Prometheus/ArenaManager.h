@@ -18,6 +18,8 @@ struct FSpawnInstructions
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Spawning")
 	TSubclassOf<AEnemyPawn> EnemyClassToSpawn;
 
+	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawning")
 	ATargetPoint* SpawnLocation;
 };
@@ -63,6 +65,8 @@ protected:
 
 	void EndArena();
 	
+	UPROPERTY()
+	TArray<AEnemyPawn*> ActiveEnemiesArray;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -70,7 +74,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ReportEnemyDeath();
 
-	
+	UFUNCTION(BlueprintCallable)
+	void ResetArena();
+
+	bool bPlayerAlive = true;
 
 	FTimerHandle PhaseTimerHandle;
 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
 #include "MarkableComponent.h"
 #include "PlayerDamageInterface.h"
 #include "PlayerSubsystem.h"
@@ -213,7 +214,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Checkpoints")
 	void RespawnAtCheckpoint();
 
-	
+	UPROPERTY()
+	class AArenaManager* CurrentArenaManager;
 	
 	float GetDamage();
 	

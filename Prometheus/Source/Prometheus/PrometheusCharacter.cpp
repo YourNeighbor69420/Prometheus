@@ -2,6 +2,7 @@
 
 #include "PrometheusCharacter.h"
 
+#include "ArenaManager.h"
 #include "EnemyPawn.h"
 #include "Animation/AnimInstance.h"
 #include "Camera/CameraComponent.h"
@@ -17,7 +18,7 @@
 #include "Prometheus.h"
 #include "PrometheusGameInstance.h"
 #include "Kismet/GameplayStatics.h"
-#include "Math/UnitConversion.h"
+
 
 void APrometheusCharacter::OnPlayerContact(UPrimitiveComponent* HitComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -42,13 +43,12 @@ APrometheusCharacter::APrometheusCharacter()
 	
 	// Create the first person mesh that will be viewed only by this character's owner
 	FirstPersonMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("First Person Mesh"));
-
 	FirstPersonMesh->SetupAttachment(FirstPersonCameraComponent);
 	FirstPersonMesh->SetOnlyOwnerSee(true);
 	FirstPersonMesh->FirstPersonPrimitiveType = EFirstPersonPrimitiveType::FirstPerson;
 	FirstPersonMesh->SetCollisionProfileName(FName("NoCollision"));
 	
-
+	//Music Component 
 	MusicAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("MusicAudio"));
 	MusicAudioComponent->SetupAttachment(RootComponent);
 
@@ -67,7 +67,9 @@ void APrometheusCharacter::ApplyPlayerDamage_Implementation(float SpeedDebuff)
 {
 	IPlayerDamageInterface::ApplyPlayerDamage_Implementation(SpeedDebuff);
 
+	//Subtract from player speed
 	ViLocity *= SpeedDebuff;
+	//Play camera shake to show damage
 	if (DamageCameraShake)
 	{
 		if (APlayerController* PC = Cast<APlayerController>(GetController()))
@@ -118,22 +120,7 @@ void APrometheusCharacter::BeginPlay()
 	DesiredFOV = DefaultFOV;
 
 	CurrentSensitivity = DefaultSensitivity;
-
-
-	///////////Checkpoints///////////////
-
-	UPrometheusGameInstance* GameInstance = Cast<UPrometheusGameInstance>(GetGameInstance());
-	 if (GameInstance && GameInstance->bHasSavedCheckpoint)
-	 {
-		 SetActorLocationAndRotation(GameInstance->SavedLocation, GameInstance->SavedRotation, false, nullptr, ETeleportType::TeleportPhysics);
-
-	 	if (APlayerController* PC = Cast<APlayerController>(GetController()))
-	 	{
-	 		PC->SetControlRotation(GameInstance->SavedRotation);
-	 		ViLocity = GameInstance->SavedRotation.Vector() * InitialLaunchSpeed;
-	 		
-	 	}
-	 }
+	
 }
 
 void APrometheusCharacter::Tick(float DeltaTime)
@@ -621,8 +608,23 @@ void APrometheusCharacter::EndAttack(UMarkableComponent* Target)
 
 void APrometheusCharacter::RespawnAtCheckpoint()
 {
-	FName CurrentLevelName = FName(*GetWorld()->GetName());
-	UGameplayStatics::OpenLevel(this, CurrentLevelName);
+	UPrometheusGameInstance* GameInstance = Cast<UPrometheusGameInstance>(GetGameInstance());
+	 if (GameInstance && GameInstance->bHasSavedCheckpoint)
+	 {
+		 SetActorLocationAndRotation(GameInstance->SavedLocation, GameInstance->SavedRotation, false, nullptr, ETeleportType::TeleportPhysics);
+
+	 	if (APlayerController* PC = Cast<APlayerController>(GetController()))
+	 	{
+	 		PC->SetControlRotation(GameInstance->SavedRotation);
+	 		ViLocity = ViLocity * 0.f;;
+	 		ViLocity = GameInstance->SavedRotation.Vector() * InitialLaunchSpeed;
+
+	 		CurrentArenaManager->ResetArena();
+
+	 		PlayerSubsystem->ClearMarkedTarget();
+	 		
+	 	}
+	 }
 }
 
 float APrometheusCharacter::GetDamage()

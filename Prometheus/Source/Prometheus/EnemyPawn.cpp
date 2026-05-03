@@ -160,6 +160,35 @@ bool AEnemyPawn::Deactivated()
 	
 }
 
+void AEnemyPawn::FullyDeactivate()
+{
+	SetActorTickEnabled(false);
+        	
+	SetActorHiddenInGame(true);
+        
+	SetActorEnableCollision(false);
+        
+	AAIController* AiController = Cast<AAIController>(GetController());
+	if (AiController)
+	{
+		AiController->StopMovement();
+		UBrainComponent* EnemyBrain = AiController->GetBrainComponent();
+		if (EnemyBrain)
+		{
+			EnemyBrain->StopLogic("Deactivated");
+			bIsAlive = false;
+        			
+		}
+	}
+        
+	if (OwningArena)
+	{
+		OwningArena->ReportEnemyDeath();
+        
+		OwningArena = nullptr;
+	}
+}
+
 void AEnemyPawn::Activate()
 {
 	if (UMarkableComponent* MarkableComponent = GetComponentByClass<UMarkableComponent>())

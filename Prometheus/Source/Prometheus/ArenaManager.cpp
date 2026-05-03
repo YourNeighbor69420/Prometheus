@@ -39,6 +39,8 @@ void AArenaManager::OnPlayerEnter(UPrimitiveComponent* OverlappedComponent, AAct
 	{
 		TriggerBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+		Player->CurrentArenaManager = this;
+
 		StartPhase();
 	}
 }
@@ -46,7 +48,8 @@ void AArenaManager::OnPlayerEnter(UPrimitiveComponent* OverlappedComponent, AAct
 void AArenaManager::StartPhase()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("WAVE CHECK -> CurrentIndex: %d | TotalPhases: %d"), CurrentPhaseIndex, ArenaPhases.Num()));
-
+	
+	
 	FArenaPhase& CurrentPhase = ArenaPhases[CurrentPhaseIndex];
 
 	UEnemyPoolSubsystem* EnemyPoolSubsystem = GetWorld()->GetSubsystem<UEnemyPoolSubsystem>();
@@ -62,6 +65,7 @@ void AArenaManager::StartPhase()
 				SpawnedEnemy->SetOwningArena(this);
 				ActiveEnemiesInRoom++;
 				
+				ActiveEnemiesArray.Add(SpawnedEnemy);
 			}
 		}
 	}
@@ -82,6 +86,10 @@ void AArenaManager::Tick(float DeltaTime)
 
 void AArenaManager::ReportEnemyDeath()
 {
+	if (bPlayerAlive)
+	{
+		return;
+	}
 	ActiveEnemiesInRoom--;
 
 	if (ActiveEnemiesInRoom <= 0)
@@ -100,9 +108,29 @@ void AArenaManager::ReportEnemyDeath()
 		{
 			//Room Cleared
 			EndArena();
-			
 		}
 	}
+}
+
+void AArenaManager::ResetArena()
+{
+	bPlayerAlive = true;
+	GetWorldTimerManager().ClearTimer(PhaseTimerHandle);
+
+	for (AEnemyPawn* Enemy : ActiveEnemiesArray )
+	{
+		
+		Enemy->FullyDeactivate();
+	}
+
+	ActiveEnemiesArray.Empty();
+
+	CurrentPhaseIndex = 0;
+	ActiveEnemiesInRoom = 0;
+
+	TriggerBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
+	bPlayerAlive = false;
 	
 }
 
