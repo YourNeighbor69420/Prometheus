@@ -15,5 +15,6 @@ class PROMETHEUS_API AEnemyAIController : public ADetourCrowdAIController
 {
 	GENERATED_BODY()
 
+	//When AI Controller takes over a pawn
 	virtual void OnPossess(APawn* InPawn) override;
 };

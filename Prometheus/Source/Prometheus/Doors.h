@@ -20,12 +20,15 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	//Create a static mesh for the door
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UStaticMeshComponent* DoorsMesh;
 
+	//Removes the door 
 	UFUNCTION()
 	void UnlockDoor();
 
+	//What arena manages the door
 	UPROPERTY(EditAnywhere, category = "Doors")
 	AArenaManager* DoorsManager;
 

@@ -18,16 +18,19 @@ void UPlayerSubsystem::Deinitialize()
 
 void UPlayerSubsystem::SetMarkedTarget(UMarkableComponent* NewMarkedTarget)
 {
-	UE_LOG(LogTemp, Error, TEXT("Subsystem Address: %p"), this);
+	//UE_LOG(LogTemp, Error, TEXT("Subsystem Address: %p"), this);
 
+	//If we already have a target, turn off its UI marker before switching
 	if (CurrentMarkedTarget.IsValid())
 	{
 		IMarkingInterface::Execute_OnUnMarked(CurrentMarkedTarget.Get());
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow,"this does work");
 	}
 
+	//Assign new target
 	CurrentMarkedTarget = NewMarkedTarget;
-	
+
+	//If the new target hit, turn on its UI marker
 	if (NewMarkedTarget)
 	{
 		IMarkingInterface::Execute_OnMarked(NewMarkedTarget);
@@ -42,6 +45,7 @@ void UPlayerSubsystem::SetMarkedTarget(UMarkableComponent* NewMarkedTarget)
 
 void UPlayerSubsystem::ClearMarkedTarget()
 {
+	// Clears out the current target completely and hides widgets
 	CurrentMarkedTarget->SetVisibility(false, true);
 	CurrentMarkedTarget = nullptr;
 	//CurrentMarkedTarget->Execute_OnUnMarked(this);
@@ -51,6 +55,7 @@ void UPlayerSubsystem::ClearMarkedTarget()
 
 UMarkableComponent* UPlayerSubsystem::GetMarkedTarget() const
 {
+	//return the current marked target
 	return CurrentMarkedTarget.Get();
 }
 

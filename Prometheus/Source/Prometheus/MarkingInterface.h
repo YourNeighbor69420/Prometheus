@@ -23,12 +23,13 @@ class PROMETHEUS_API IMarkingInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
+	//Triggered when player marks and unmarks the target
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
 	void OnMarked();
-
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
 	void OnUnMarked();
 
+	//Applies damage and checks component health
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
 	void DealDamage(float DamageAmount);
 
@@ -38,6 +39,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
 	float GetMaxHealth();
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
+	void ResetHealth();
+
+	//Gets the rewards and penalties applied to the player
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
 	float GetSpeedReward();
 
@@ -50,7 +55,6 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
 	float GetDamageThreshold();
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
-	void ResetHealth();
+	
 	
 };

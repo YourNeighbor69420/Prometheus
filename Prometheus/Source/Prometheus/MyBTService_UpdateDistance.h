@@ -20,6 +20,7 @@ public:
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
+	//Reference to who the ai is targeting
 	UPROPERTY(EditAnywhere, Category = Behavior)
 	FBlackboardKeySelector TargetActorKey;
 };

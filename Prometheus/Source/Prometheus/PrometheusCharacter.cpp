@@ -83,17 +83,19 @@ void APrometheusCharacter::ApplyPlayerDamage_Implementation(float SpeedDebuff)
 void APrometheusCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	RespawnAtCheckpoint();
 	
+	//Check and create the speed blur material
 	if (SpeedBlurMaterial && FirstPersonCameraComponent)
 	{
 		SpeedBlurMaterialInstance = UMaterialInstanceDynamic::Create(SpeedBlurMaterial, this);
 
 		FirstPersonCameraComponent->AddOrUpdateBlendable(SpeedBlurMaterialInstance, 1.0f);
 	}
+
+	//Assign function if player makes contact
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &APrometheusCharacter::OnPlayerContact);
 
+	//Get player subsystem
 	if (APlayerController* PC = Cast<APlayerController>(GetController()))
 	{
 		if (ULocalPlayer* LocalPlayer = PC->GetLocalPlayer())
@@ -101,7 +103,7 @@ void APrometheusCharacter::BeginPlay()
 			PlayerSubsystem = LocalPlayer->GetSubsystem<UPlayerSubsystem>();
 		}
 	}
-	float number = 1.f;
+	
 	/*if (PlayerSubsystem)
 	{
 		UE_LOG(LogTemp, Display, TEXT("Player Subsystem Created"));
@@ -113,13 +115,16 @@ void APrometheusCharacter::BeginPlay()
 	}
 	LaunchCharacter(GetActorForwardVector() * InitialLaunchSpeed, true, true );*/
 
+	//Deactivate normal movement 
 	GetCharacterMovement()->Deactivate();
+
+	//Launch player with custom movement and speed
 	ViLocity = GetActorForwardVector() * InitialLaunchSpeed;
 
 	//Set FOV
 	GetFirstPersonCameraComponent()->FieldOfView = DefaultFOV;
 	DesiredFOV = DefaultFOV;
-
+	//Set Sensitivity
 	CurrentSensitivity = DefaultSensitivity;
 	
 }
@@ -136,23 +141,28 @@ void APrometheusCharacter::Tick(float DeltaTime)
 	}*/
 	
 	//AddMovementInput(Direction, 1.0f);
+
+	///////////////////////////////////Aiming//////////////////////////////////////////
+	//Check if player is aiming
 	if (bIsAiming)
 	{
+		// If the player aims for too long, drain speed
 		CurrentAimTime += DeltaTime;
-
 		if (CurrentAimTime > MaxSafeAimTime)
 		{
 			ViLocity = ViLocity * (1.f - (SpeedDrainRate * DeltaTime));
-			
+			//Notify UI
 			OnSpeedDrain.Broadcast();
 		}
 	}
+	// Handle Cooldown recovery when not aiming
 	else if (bIsAiming == false && bAimCooldown == true)
 	{
 		CurrentCooldownTime += DeltaTime;
 
 		float CooldownPercentage = CurrentCooldownTime / AimCooldownLength;
 
+		//Notify UI
 		OnAimCooldownUpdate.Broadcast(CooldownPercentage);
 
 		if (CurrentCooldownTime >= AimCooldownLength)
@@ -162,39 +172,41 @@ void APrometheusCharacter::Tick(float DeltaTime)
 		}
 	}
 
+	//////////////////////////////////////////////Camera Effects/////////////////////////////////
 	if (FirstPersonCameraComponent)
 	{
 		FVector2d SpeedRange(0.0f, MaxViLocity);
 		FVector2D FOVRange(DefaultFOV, MaxSpeedFOV);
 
+		// Map velocity to a target FOV
 		float TargetFOV = FMath::GetMappedRangeValueClamped(SpeedRange, FOVRange, ViLocity.Length());
-
+		// Smoothly interpolate the camera to the target FOV
 		float SmoothedFOV = FMath::FInterpTo(FirstPersonCameraComponent->FieldOfView, TargetFOV, DeltaTime, FOVZoomSpeed);
-
 		FirstPersonCameraComponent->SetFieldOfView(SmoothedFOV);
 
+		// Apply Motion Blur intensity based on how fast we are going
 		if (SpeedBlurMaterialInstance)
 		{
 			FVector2d BlurRange(0.0f, MaxBlurIntensity);
-
 			float TargetBlur = FMath::GetMappedRangeValueClamped(SpeedRange, BlurRange, ViLocity.Length());
-
 			SpeedBlurMaterialInstance->SetScalarParameterValue(FName("BlurIntensity"), TargetBlur);
 		}
 	}
-	
+
+	///////////////////////////////////////////Skill Checks////////////////////////////////
 	if (UMarkableComponent* CurrentTarget = PlayerSubsystem->GetMarkedTarget())
 	{
 		float CurrentDistance = FVector::Distance(GetActorLocation(), CurrentTarget->GetComponentLocation());
         	
         	if (CurrentDistance <= DistanceToSkillCheck)
         	{
+        		//Notify UI
         		OnInAttackRange.Broadcast(GetSkillCheckProgress());
         	}
 	}
 	
-
-	if (MoveInputRight != 0.0f)
+	//Steering system (broken)
+	/*if (MoveInputRight != 0.0f)
 	{
 
 		float CurrentSpeed = ViLocity.Length();
@@ -206,28 +218,36 @@ void APrometheusCharacter::Tick(float DeltaTime)
 		ViLocity += SteeringNudge;
 
 		ViLocity = ViLocity.GetSafeNormal() * CurrentSpeed;
-	}
-	
+	}*/
+
+	/////////////////////////////////////Audio//////////////////////////////////
+	//Update the music system based on speed
 	if (MusicAudioComponent && MusicAudioComponent->IsPlaying())
 	{
 		MusicAudioComponent->SetFloatParameter(FName("PlayerSpeed"), ViLocity.Size());
 	}
 
+	///////////////////////////Speed///////////////////////////////////////////////////
+	//Kill player if too slow
 	if (ViLocity.Length() <= DeathSpeed)
 	{
+		//Notify UI
 		OnDeath.Broadcast();
 	}
 	
 	if (!ViLocity.IsNearlyZero())
 	{
+		// Apply passive air resistance
 		ViLocity = ViLocity * (1.f - (Drag * DeltaTime));
 		ViLocity = ViLocity.GetClampedToMaxSize(MaxViLocity);
+
+		// Calculate damage dealt based on current speed
 		Damage = ViLocity.Size() / 10.f;
 		
-		FString DebugMsg = FString::Printf(TEXT("Velocity: %s | Speed: %f, damage : %f"), 
+		/*FString DebugMsg = FString::Printf(TEXT("Velocity: %s | Speed: %f, damage : %f"), 
 				*ViLocity.ToString(), 
 				ViLocity.Size(),
-				Damage);
+				Damage);*/
 		
 		//GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, DebugMsg);
 		/*if (ViLocity.SizeSquared() < 1000.f)
@@ -235,6 +255,7 @@ void APrometheusCharacter::Tick(float DeltaTime)
 			ViLocity = FVector::ZeroVector;
 		}*/
 
+		// Broadcast percentage to UI
 		if (MaxViLocity > 0.0f)
 		{
 			float CurrentSpeed = ViLocity.Size();
@@ -247,13 +268,17 @@ void APrometheusCharacter::Tick(float DeltaTime)
 		}
 	}
 
+	// Physically move the character based on current ViLocity
 	if (!ViLocity.IsNearlyZero())
 	{
 		FVector DesiredMove = ViLocity * DeltaTime;
 		AddActorWorldOffset(DesiredMove, true);
 		
 	}
-	
+
+
+	////////////////////////////Slow Motion///////////////////////////////////////
+	//Change FOV in relation to time dilation
 	float CurrentFOV = GetFirstPersonCameraComponent()->FieldOfView;
 	
 	if (FMath::IsNearlyEqual(CurrentFOV, DesiredFOV, 0.1f))
@@ -264,6 +289,7 @@ void APrometheusCharacter::Tick(float DeltaTime)
 	float TimeDilation = UGameplayStatics::GetGlobalTimeDilation(this);
 	float RealDeltaTime;
 
+	// Adjust DeltaTime manually if time is slowed to keep FOV transition smooth
 	if (TimeDilation < 0.9f)
 	{
 		RealDeltaTime = 0.02f;
@@ -273,7 +299,7 @@ void APrometheusCharacter::Tick(float DeltaTime)
 		RealDeltaTime = DeltaTime;
 	}
 
-	
+	//Actually set the FOV
 	float NewFOV = FMath::FInterpTo(CurrentFOV, DesiredFOV, RealDeltaTime, 10.f);
 	GetFirstPersonCameraComponent()->SetFieldOfView(NewFOV);
 }
@@ -294,16 +320,20 @@ void APrometheusCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APrometheusCharacter::LookInput);
 		EnhancedInputComponent->BindAction(MouseLookAction, ETriggerEvent::Triggered, this, &APrometheusCharacter::LookInput);
 
-		
+		//Marking
 		EnhancedInputComponent->BindAction(MarkAction, ETriggerEvent::Started, this, &APrometheusCharacter::MarkInput);
-		
+
+		//Aiming
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &APrometheusCharacter::AimInput);
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &APrometheusCharacter::AimReleaseInput);
-		
+
+		//Attack
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Started, this, &APrometheusCharacter::AttackInput);
-		
+
+		//Restart
 		EnhancedInputComponent->BindAction(RestartAction, ETriggerEvent::Started, this, &APrometheusCharacter::RestartInput);
-		
+
+		//Dash
 		EnhancedInputComponent->BindAction(DashAction, ETriggerEvent::Started, this, &APrometheusCharacter::DashInput);
 	}
 	else
@@ -370,10 +400,11 @@ void APrometheusCharacter::DoJumpEnd()
 void APrometheusCharacter::MarkInput()
 {
 	//Check if the line trace hit a markable component and sets it as the current marked target
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Mark input" );
 	FHitResult Hit = LineTrace();
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Mark input" );
 
 	
+	//If hitting a markable component, set marked target and show widget
 	if (Hit.bBlockingHit)
 	{
 		if (UMarkableComponent* HitComponent = Cast<UMarkableComponent>(Hit.GetComponent()))
@@ -389,12 +420,15 @@ void APrometheusCharacter::MarkInput()
 
 void APrometheusCharacter::AimInput()
 {
-	//Slow down the worlds time and change the FOV
+
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Aim input" );
 	
-	
+	//Slow down the worlds time and change the FOV
+
+	//Check cooldown
 	if (bAimCooldown == false)
 	{
+		//Aim in, slow down time, change FOV
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), TimeDilationFactor);
 		DesiredFOV = SlowMotionFOV;
 		CurrentSensitivity = AimSensitivity;
@@ -407,15 +441,14 @@ void APrometheusCharacter::AimInput()
 
 void APrometheusCharacter::AimReleaseInput()
 {
-	//Sets the worlds time and FOV back to normal
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Aim input" );
 	
-	
-	
+	//Sets the worlds time and FOV back to normal
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.f);
 	DesiredFOV = DefaultFOV;
 	CurrentSensitivity = DefaultSensitivity;
 
+	//Don't let the player call the release aim function if the cooldown is active
 	if (bAimCooldown == false)
 	{
 		bIsAiming = false;
@@ -476,16 +509,17 @@ void APrometheusCharacter::DashInput()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash input" );
 
+	//If there is an alive, marked target, dash towards the component
 	if (UMarkableComponent* MarkedTarget = PlayerSubsystem->GetMarkedTarget())
 	{
 		if (AEnemyPawn* TargetEnemy = Cast<AEnemyPawn>(MarkedTarget->GetOwner()))
         	{
         		if (MarkedTarget)
                 	{
-                		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash input" );
+                		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash input" );
                 		if (TargetEnemy->bIsAlive)
                 		{
-                			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash worked" );
+                			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Dash worked" );
                 			DashToTarget(MarkedTarget);
                 		}
                 	}
@@ -545,28 +579,32 @@ FHitResult APrometheusCharacter::LineTrace()
 
 void APrometheusCharacter::AttackTeleport(UMarkableComponent* Target)
 {
-	//Get the distance between the player and the marked target and check if we are close enough to attack/teleport
-	FVector PlayerLocation = GetActorLocation();
-	FVector TargetLocation = Target->GetComponentLocation();
-	float Distance = FVector::Dist(PlayerLocation, TargetLocation);
-
-	float CurrentProgress = GetSkillCheckProgress();
-
-	//Distance < DistanceToAttack
 	
+	
+	/*FVector PlayerLocation = GetActorLocation();
+	FVector TargetLocation = Target->GetComponentLocation();
+	float Distance = FVector::Dist(PlayerLocation, TargetLocation);*/
+
+	
+	
+	//Get the skill check progress between the player and the marked target and check if we are close enough to attack/teleport
+	float CurrentProgress = GetSkillCheckProgress();
 	if (CurrentProgress >= SkillCheckMinimum && CurrentProgress <= SkillCheckMaximum)
 	{
+		//Notify UI
 		OnSkillCheckSucceed.Broadcast();
-
+		//Phase through any enemies
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
-		
+		//Store current movement stats to restore them after the dash
 		OriginalViLocity = ViLocity;
 		OriginalMaxViLocity = MaxViLocity;
 		OriginalDamage = Damage;
-		
+
+		//Temporarily override max speed and set velocity to dash speed
 		MaxViLocity = DashSpeed;
 		ViLocity = ViLocity * DashSpeed;
-	
+
+		//Spawn the Niagara attack effect
 		if ( AttackEffect)
 		{
 			UNiagaraFunctionLibrary::SpawnSystemAttached(AttackEffect, GetRootComponent(), NAME_None, FVector(0.f, 0.f, 0.f), FRotator(0.f, 90.f, 0.f), EAttachLocation::KeepRelativeOffset, true);
@@ -586,7 +624,8 @@ void APrometheusCharacter::AttackTeleport(UMarkableComponent* Target)
 		//Teleport to the destination we have set while checking if we pass through anything
 		//SetActorLocation(TeleportDestination, true);
 		DashTimerDelegate.BindUObject(this, &APrometheusCharacter::EndAttack, Target);
-		
+
+		//Set a timer to end the dash and execute the damage logic
 		GetWorld()->GetTimerManager().SetTimer(DashTimerHandle, DashTimerDelegate, DashTimeLength, false);
 		
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f , FColor::Emerald, "teleported");
@@ -598,30 +637,36 @@ void APrometheusCharacter::AttackTeleport(UMarkableComponent* Target)
 
 void APrometheusCharacter::EndAttack(UMarkableComponent* Target)
 {
+	// Restore original movement state
 	MaxViLocity = OriginalMaxViLocity;
 	ViLocity = OriginalViLocity;
 	Damage = OriginalDamage;
 
+	// Apply actual damage to the target component
 	Attack(Target);
 	
+	// Restore collision so we don't stay invincible
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 }
 
 void APrometheusCharacter::RespawnAtCheckpoint()
 {
+	//Get game instance
 	UPrometheusGameInstance* GameInstance = Cast<UPrometheusGameInstance>(GetGameInstance());
 	 if (GameInstance && GameInstance->bHasSavedCheckpoint)
 	 {
+	 	//Move player to the saved transform
 		 SetActorLocationAndRotation(GameInstance->SavedLocation, GameInstance->SavedRotation, false, nullptr, ETeleportType::TeleportPhysics);
 
 	 	if (APlayerController* PC = Cast<APlayerController>(GetController()))
 	 	{
+	 		//Set rotation and speed
 	 		PC->SetControlRotation(GameInstance->SavedRotation);
 	 		ViLocity = ViLocity * 0.f;;
 	 		ViLocity = GameInstance->SavedRotation.Vector() * InitialLaunchSpeed;
 
+	 		//Reset world
 	 		CurrentArenaManager->ResetArena();
-
 	 		PlayerSubsystem->ClearMarkedTarget();
 	 		
 	 	}
@@ -661,9 +706,11 @@ void APrometheusCharacter::TurnOffAimCooldown()
 
 float APrometheusCharacter::GetSkillCheckProgress()
 {
+	//Get distance between the player and component
 	UMarkableComponent* CurrentTarget = PlayerSubsystem->GetMarkedTarget();
 	float CurrentDistance = FVector::Distance(GetActorLocation(), CurrentTarget->GetComponentLocation());
 
+	//Map the skill check minimum distance and its begining and turn that into a value between 0 and 1 
 	FVector2D DistanceRange(DistanceToSkillCheck, MinimumDistance);
 	FVector2D UIRange(0.0f, 1.0f);
 

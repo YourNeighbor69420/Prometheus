@@ -17,12 +17,15 @@ class PROMETHEUS_API UPrometheusGameInstance : public UGameInstance
 
 public:
 
+	//Has the player hit a checkpoint?
 	UPROPERTY(BlueprintReadWrite, Category = "Checkpoints")
 	bool bHasSavedCheckpoint = false;
-	
+
+	//Location of checkpoint
 	UPROPERTY(BlueprintReadWrite, Category = "Checkpoints")
 	FVector SavedLocation;
 
+	//Rotation of checkpoint
 	UPROPERTY(BlueprintReadWrite, Category = "Checkpoints")
 	FRotator SavedRotation;
 };

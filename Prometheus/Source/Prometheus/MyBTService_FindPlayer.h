@@ -17,6 +17,7 @@ class PROMETHEUS_API UMyBTService_FindPlayer : public UBTService_BlackboardBase
 	public:
 	UMyBTService_FindPlayer();
 
+	
 	protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 	

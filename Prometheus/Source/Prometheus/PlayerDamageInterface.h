@@ -22,6 +22,7 @@ class PROMETHEUS_API IPlayerDamageInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+	//Applies the damage debuff onto the player
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, category = "Player Damage")
 	void ApplyPlayerDamage(float SpeedDebuff);
 };

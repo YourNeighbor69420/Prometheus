@@ -12,7 +12,9 @@ AEnemyPawn* UEnemyPoolSubsystem::RequestEnemy(TSubclassOf<AEnemyPawn> EnemyClass
 
 	AEnemyPawn* Enemy = nullptr;
 
+	//Always spawn the enemy 
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	
 	//If object pool has an array for the enemy and if it isn't empty
 	if (PoolMap.Contains(EnemyClass) && !PoolMap[EnemyClass].InactiveEnemies.IsEmpty())
 	{
@@ -21,8 +23,7 @@ AEnemyPawn* UEnemyPoolSubsystem::RequestEnemy(TSubclassOf<AEnemyPawn> EnemyClass
 	}
 	else
 	{
-
-		//If not, spawn a fresh enemy to be used
+		//If the pool is empty, spawn a new one
 		UWorld* World = GetWorld();
 		if (World)
 		{
@@ -31,7 +32,7 @@ AEnemyPawn* UEnemyPoolSubsystem::RequestEnemy(TSubclassOf<AEnemyPawn> EnemyClass
 			
 		}
 	}
-	//Prepare the enemy
+	//Wake the enemy up and place them at the spawn point
 	if (Enemy)
 	{
 		//Set it to the spawn point location
@@ -46,9 +47,10 @@ void UEnemyPoolSubsystem::ReturnEnemy(AEnemyPawn* EnemyToReturn)
 {
 	if (!EnemyToReturn) return;
 
+	//Check if the enemy is fully dead
 	if (EnemyToReturn->Deactivated())
 	{
-		//Find class of enemy
+		// Store the enemy back in the correct array based on its class
 		TSubclassOf<AEnemyPawn> ClassType = EnemyToReturn->GetClass();
         
 		PoolMap.FindOrAdd(ClassType).InactiveEnemies.Push(EnemyToReturn);

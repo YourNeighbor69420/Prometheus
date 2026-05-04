@@ -3,19 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "MarkableComponent.h"
 #include "PlayerDamageInterface.h"
 #include "PlayerSubsystem.h"
-#include "Components/SphereComponent.h"
 #include "Camera/CameraShakeBase.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
-
-
 #include "PrometheusCharacter.generated.h"
 
-
+// Forward Declarations
 class UInputComponent;
 class USkeletalMeshComponent;
 class UCameraComponent;
@@ -24,6 +20,8 @@ class UNiagaraSystem;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
+
+//Delegates for UI and Animations
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSpeedUpdated, float, SpeedPercentage, bool, bIsMaxSpeed);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInAttackRange, float, SkillCheckPercentage);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAimCooldownUpdate, float, AimCooldownPercentage);
@@ -34,332 +32,243 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEnemyExecute);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSpeedDrain);
 
 
-/**
- *  A basic first person character
- */
 UCLASS(abstract)
 class APrometheusCharacter : public ACharacter, public IPlayerDamageInterface
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-	/** Pawn mesh: first person view (arms; seen only by self) */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
-	USkeletalMeshComponent* FirstPersonMesh;
+    //Skeletal mesh component for player animations 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
+    USkeletalMeshComponent* FirstPersonMesh;
 
-	/** First person camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
-	UCameraComponent* FirstPersonCameraComponent;
+    //First person camera component
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
+    UCameraComponent* FirstPersonCameraComponent;
 
 protected:
+    //Input actions
+    UPROPERTY(EditAnywhere, Category ="Input") UInputAction* JumpAction;
+    UPROPERTY(EditAnywhere, Category ="Input") UInputAction* MoveAction;
+    UPROPERTY(EditAnywhere, Category ="Input") UInputAction* LookAction;
+    UPROPERTY(EditAnywhere, Category ="Input") UInputAction* MouseLookAction;
+    UPROPERTY(EditAnywhere, Category ="Input") UInputAction* MarkAction;
+    UPROPERTY(EditAnywhere, Category ="Input") UInputAction* AimAction;
+    UPROPERTY(EditAnywhere, Category ="Input") UInputAction* AimReleaseAction;
+    UPROPERTY(EditAnywhere, Category ="Input") UInputAction* AttackAction;
+    UPROPERTY(EditAnywhere, Category ="Input") UInputAction* RestartAction;
+    UPROPERTY(EditAnywhere, Category ="Input") UInputAction* DashAction;
 
-	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, Category ="Input")
-	UInputAction* JumpAction;
+    //Reference to audio component
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Audio")
+    class UAudioComponent* MusicAudioComponent;
 
-	/** Move Input Action */
-	UPROPERTY(EditAnywhere, Category ="Input")
-	UInputAction* MoveAction;
-
-	/** Look Input Action */
-	UPROPERTY(EditAnywhere, Category ="Input")
-	class UInputAction* LookAction;
-
-	/** Mouse Look Input Action */
-	UPROPERTY(EditAnywhere, Category ="Input")
-	class UInputAction* MouseLookAction;
-	
-	UPROPERTY(EditAnywhere, Category="Input")
-	class UInputAction* MarkAction;
-
-	UPROPERTY(EditAnywhere, Category="Input")
-	class UInputAction* AimAction;
-
-	UPROPERTY(EditAnywhere, Category="Input")
-	class UInputAction* AimReleaseAction;
-
-	UPROPERTY(EditAnywhere, Category="Input")
-	class UInputAction* AttackAction;
-
-	UPROPERTY(EditAnywhere, Category="Input")
-	class UInputAction* RestartAction;
-
-	UPROPERTY(EditAnywhere, Category="Input")
-	class UInputAction* DashAction;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Audio")
-	class UAudioComponent* MusicAudioComponent;
-
-	UFUNCTION()
-	void OnPlayerContact(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+    //Function for player overlap with other actors 
+    UFUNCTION()
+    void OnPlayerContact(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 public:
-	APrometheusCharacter();
+    APrometheusCharacter();
 
-	virtual void ApplyPlayerDamage_Implementation(float SpeedDebuff) override;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Camera");
-	UMaterialInterface* SpeedBlurMaterial;
+    // Damage interface implementation
+    virtual void ApplyPlayerDamage_Implementation(float SpeedDebuff) override;
+    
+    //Reference for camera effects and post processing
+    UPROPERTY(EditDefaultsOnly, Category = "Camera") UMaterialInterface* SpeedBlurMaterial;
+    UPROPERTY() UMaterialInstanceDynamic* SpeedBlurMaterialInstance;
+    
+    UPROPERTY(EditAnywhere, Category = "Camera") float MaxBlurIntensity = 0.05f;
 
-	UPROPERTY()
-	UMaterialInstanceDynamic* SpeedBlurMaterialInstance;
+    //Reference to the camera shake
+    UPROPERTY(EditDefaultsOnly, Category="UI Events") TSubclassOf<UCameraShakeBase> DamageCameraShake;
 
-	UPROPERTY(EditAnywhere, Category = "Camera");
-	float MaxBlurIntensity = 0.05f;
-	
+    //Reference for attack niagara effect
+    UPROPERTY(EditDefaultsOnly, Category="UI Events") UNiagaraSystem* AttackEffect;
+    
 protected:
-	void BeginPlay() override;
+    virtual void BeginPlay() override;
+    virtual void Tick(float DeltaTime) override;
+    
+    void MoveInput(const FInputActionValue& Value);
+    void LookInput(const FInputActionValue& Value);
 
-	void Tick(float DeltaTime) override;
-	
-	/** Called from Input Actions for movement input */
-	void MoveInput(const FInputActionValue& Value);
+    //Input functions
+    UFUNCTION(BlueprintCallable, Category="Input")
+    virtual void DoAim(float Yaw, float Pitch);
+    UFUNCTION(BlueprintCallable, Category="Input")
+    virtual void DoMove(float Right, float Forward);
+    UFUNCTION(BlueprintCallable, Category="Input")
+    virtual void DoJumpStart();
+    UFUNCTION(BlueprintCallable, Category="Input")
+    virtual void DoJumpEnd();
+    UFUNCTION(BlueprintCallable, Category="Input")
+    void MarkInput();
+    UFUNCTION(BlueprintCallable, Category="Input")
+    void AimInput();
+    UFUNCTION(BlueprintCallable, Category="Input")
+    void AimReleaseInput();
+    UFUNCTION(BlueprintCallable, Category="Input")
+    void AttackInput();
+    UFUNCTION(BlueprintCallable, Category="Input")
+    void Attack(UMarkableComponent* Target);
+    UFUNCTION(BlueprintCallable, Category="Input")
+    void RestartInput();
+    UFUNCTION(BlueprintCallable, Category="Input")
+    void DashInput();
+    
+    //Reference for player subsystem
+    UPROPERTY() UPlayerSubsystem* PlayerSubsystem;
 
-	/** Called from Input Actions for looking input */
-	void LookInput(const FInputActionValue& Value);
+    //Line trace for marking components
+    FHitResult LineTrace();
 
-	/** Handles aim inputs from either controls or UI interfaces */
-	UFUNCTION(BlueprintCallable, Category="Input")
-	virtual void DoAim(float Yaw, float Pitch);
+    //Attack dash (formerly a teleport)
+    void AttackTeleport(UMarkableComponent* Target);
 
-	/** Handles move inputs from either controls or UI interfaces */
-	UFUNCTION(BlueprintCallable, Category="Input")
-	virtual void DoMove(float Right, float Forward);
-
-	/** Handles jump start inputs from either controls or UI interfaces */
-	UFUNCTION(BlueprintCallable, Category="Input")
-	virtual void DoJumpStart();
-
-	/** Handles jump end inputs from either controls or UI interfaces */
-	UFUNCTION(BlueprintCallable, Category="Input")
-	virtual void DoJumpEnd();
-
-	// Handles the player marking actors
-	UFUNCTION(BlueprintCallable, Category="Input")
-	void MarkInput();
-
-	//Handles the slow motion aiming
-	UFUNCTION(BlueprintCallable, Category="Input")
-	void AimInput();
-
-	//Knows when the aim is released
-	UFUNCTION(BlueprintCallable, Category="Input")
-	void AimReleaseInput();
-
-	//Handles the players attack
-	UFUNCTION(BlueprintCallable, Category="Input")
-	void AttackInput();
-
-	//Handles the players attack
-	UFUNCTION(BlueprintCallable, Category="Input")
-	void Attack(UMarkableComponent* Target);
-
-	//Handles the level restart
-	UFUNCTION(BlueprintCallable, Category="Input")
-	void RestartInput();
-
-	//Handles the players dashes
-	UFUNCTION(BlueprintCallable, Category="Input")
-	void DashInput();
-	
-	UPROPERTY()
-	UPlayerSubsystem* PlayerSubsystem;
-
-	//Returns whatever the player selects/clicks
-	FHitResult LineTrace();
-
-	//The teleport when attacking
-	void AttackTeleport(UMarkableComponent* Target);
-
-	UFUNCTION()
-	void EndAttack(UMarkableComponent* Target);
-
-	
-
-	//What is currently marked
-	//TWeakObjectPtr<UMarkableComponent> CurrentMarkedTarget;
+    //Setting speed back to normal after an attack
+    UFUNCTION() void EndAttack(UMarkableComponent* Target); 
 
 public:
+    //Event dispatchers
+    UPROPERTY(BlueprintAssignable, Category = "UI Events")
+    FOnAimCooldownUpdate OnAimCooldownUpdate;
+    UPROPERTY(BlueprintAssignable, Category="UI Events")
+    FOnSpeedUpdated OnSpeedUpdated;
+    UPROPERTY(BlueprintAssignable, Category="UI Events")
+    FOnDeath OnDeath;
+    UPROPERTY(BlueprintAssignable, Category="UI Events")
+    FOnInAttackRange OnInAttackRange;
+    UPROPERTY(BlueprintAssignable, Category="UI Events")
+    FOnSkillCheckSucceed OnSkillCheckSucceed;
+    UPROPERTY(BlueprintAssignable, Category="UI Events")
+    FOnSpeedDrain OnSpeedDrain;
+    UPROPERTY(BlueprintAssignable, Category="Animations")
+    FOnEnemyMark OnEnemyMark;
+    UPROPERTY(BlueprintAssignable, Category="Animations")
+    FOnEnemyExecute OnEnemyExecute;
 
-	UPROPERTY(BlueprintAssignable,Category = "UI Events")
-	FOnAimCooldownUpdate OnAimCooldownUpdate;
-	
-	UPROPERTY(BlueprintAssignable, Category="UI Events")
-	FOnSpeedUpdated OnSpeedUpdated;
+    //Respawn player at checkpoint
+    UFUNCTION(BlueprintCallable, Category="Checkpoints")
+    void RespawnAtCheckpoint();
 
-	UPROPERTY(BlueprintAssignable, Category="UI Events")
-	FOnDeath OnDeath;
+    //Reference for the current arena the player is in
+    UPROPERTY() class AArenaManager* CurrentArenaManager;
 
-	UPROPERTY(BlueprintAssignable, Category="UI Events")
-	FOnInAttackRange OnInAttackRange;
-
-	UPROPERTY(BlueprintAssignable, Category="UI Events")
-	FOnSkillCheckSucceed OnSkillCheckSucceed;
-	
-	UPROPERTY(BlueprintAssignable, Category="UI Events")
-	FOnSpeedDrain OnSpeedDrain;
-	
-	UPROPERTY(BlueprintAssignable, Category="Animations")
-	FOnEnemyMark OnEnemyMark;
-
-	UPROPERTY(BlueprintAssignable, Category="Animations")
-	FOnEnemyExecute OnEnemyExecute;
-
-	
-	UPROPERTY(EditDefaultsOnly, Category="UI Events")
-	TSubclassOf<UCameraShakeBase> DamageCameraShake; ;
-
-	UPROPERTY(EditDefaultsOnly, Category="UI Events")
-	UNiagaraSystem* AttackEffect;
-	
-	UFUNCTION(BlueprintCallable, Category="Checkpoints")
-	void RespawnAtCheckpoint();
-
-	UPROPERTY()
-	class AArenaManager* CurrentArenaManager;
-	
-	float GetDamage();
-	
+    //Return how much damage the player has/does currently
+    float GetDamage();
+    
 protected:
+    virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 
-	/** Set up input action bindings */
-	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
+    //The players initial speed on spawn
+    UPROPERTY(EditAnywhere, Category="Movement")
+    float InitialLaunchSpeed = 5000.f;
+    //Custom Speed
+    UPROPERTY(EditAnywhere, Category="Movement")
+    FVector ViLocity;
+    //Max custom speed
+    UPROPERTY(EditAnywhere, Category="Movement UI")
+    float MaxViLocity = 5000.f;
+    //How fast the player attack dash is
+    UPROPERTY(EditAnywhere, Category="Movement")
+    float DashSpeed = 20000.f;
+    //How long the speed attack override lasts
+    UPROPERTY(EditAnywhere, Category="Movement")
+    float DashTimeLength = 0.2f;
+    //The slowest the player can go before dying
+    UPROPERTY(EditAnywhere, Category="Movement")
+    float DeathSpeed = 0.100;
+    //How fast the player loses speed
+    UPROPERTY(EditAnywhere, Category="Movement")
+    float Drag = 0.25f;
 
-	/*//Max Player speed
-	UPROPERTY(EditAnywhere, Category="Movement")
-	float MaxSpeed = 20000.f;*/
+    //Normal change direction function
+    void DashToTarget(UMarkableComponent* Target);
+    
+    //float MoveInputRight = 0.0f;
+    
+    //Storage for original speed values when attacking
+    FVector OriginalViLocity; 
+    float OriginalMaxViLocity;
+    float OriginalDamage;
 
-	//How fast the player is sent out at the beginning of the level
-	UPROPERTY(EditAnywhere, Category="Movement")
-	float InitialLaunchSpeed = 5000.f;
+    //How much damage the player does
+    float Damage;
 
-	void DashToTarget(UMarkableComponent* Target);
+    //Timer handles
+    FTimerHandle DashTimerHandle;
+    FTimerDelegate DashTimerDelegate;
+    FTimerHandle AimCooldownTimerHandle;
 
-	float MoveInputRight = 0.0f;
+    //How much slow motion to apply
+    UPROPERTY(EditAnywhere, Category="Slow Motion")
+    float TimeDilationFactor = 0.1f;
+    //Volatile FOV variable
+    float DesiredFOV;
+    //Orignal FOV
+    UPROPERTY(EditAnywhere, Category="Camera")
+    float DefaultFOV = 100.f;
+    //Slow motion FOV
+    UPROPERTY(EditAnywhere, Category="Camera")
+    float SlowMotionFOV = 60.f;
+    
+    //Volatile Sensitivity Variable
+    float CurrentSensitivity = 1.f;
+    //Original Sense
+    UPROPERTY(EditAnywhere, Category="Camera")
+    float DefaultSensitivity = 1.f;
+    //Slow Motion Sense
+    UPROPERTY(EditAnywhere, Category="Camera")
+    float AimSensitivity = 0.4f;
 
-	
-	//Custom speed vector
-	UPROPERTY(EditAnywhere, Category="Movement")
-	FVector ViLocity;
-	
-	UPROPERTY(EditAnywhere, Category="Movement UI")
-	float MaxViLocity = 5000.f;
+    //Where the skill check begins
+    UPROPERTY(EditAnywhere, Category="Combat")
+    float DistanceToSkillCheck = 500.f;
+    //Where the skill check ends
+    UPROPERTY(EditAnywhere, Category="Combat")
+    float MinimumDistance = 50.f;
+    //Correct skill check zone minimum
+    UPROPERTY(EditAnywhere, Category="Combat")
+    float SkillCheckMinimum = 0.7;
+    //Correct skill check zone maximum
+    UPROPERTY(EditAnywhere, Category="Combat")
+    float SkillCheckMaximum = 0.85;
 
-	UPROPERTY(EditAnywhere, Category="Movement")
-	float DashSpeed = 20000.f;
-
-	UPROPERTY(EditAnywhere, Category="Movement")
-	float DashTimeLength = 0.2f;
-
-	FVector OriginalViLocity;
-
-	float OriginalMaxViLocity;
-
-	float OriginalDamage;
-
-	FTimerHandle DashTimerHandle;
-
-	FTimerDelegate DashTimerDelegate;
-
-	UPROPERTY(EditAnywhere, Category="Movement")
-	float DeathSpeed = 0.100;
-	
-	float Damage;
-	
-	//Custom air resistance
-	UPROPERTY(EditAnywhere, Category="Movement")
-	float Drag = 0.25f;
-
-	//How slow time goes when aiming
-	UPROPERTY(EditAnywhere, Category="Slow Motion")
-	float TimeDilationFactor = 0.1f;
-
-	//What we currently want the fov to be
-	float DesiredFOV;
-
-	//The normal FOV
-	UPROPERTY(EditAnywhere, Category="Camera")
-	float DefaultFOV = 100.f;
-
-	//The aiming FOV
-	UPROPERTY(EditAnywhere, Category="Camera")
-	float SlowMotionFOV = 60.f;
-
-	//The current player sensitivity
-	float CurrentSensitivity = 1.f;
-
-	//The normal player sensitivity
-	UPROPERTY(EditAnywhere, Category="Camera")
-	float DefaultSensitivity = 1.f;
-
-	//The sensitivity when aiming in
-	UPROPERTY(EditAnywhere, Category="Camera")
-	float AimSensitivity = 0.4f;
-
-	//How close the player needs to be to attack an enemy
-	UPROPERTY(EditAnywhere, Category="Combat")
-	float DistanceToAttack = 250.f;
-
-	UPROPERTY(EditAnywhere, Category="Combat")
-	float DistanceToSkillCheck = 500.f;
-
-	UPROPERTY(EditAnywhere, Category="Combat")
-	float MinimumDistance = 50.f;
-
-	UPROPERTY(EditAnywhere, Category="Combat")
-	float SkillCheckMinimum = 0.7;
-
-	UPROPERTY(EditAnywhere, Category="Combat")
-	float SkillCheckMaximum = 0.85;
-
-	//How far the teleport goes
-	UPROPERTY(EditAnywhere, Category="Combat")
-	float TeleportDistance = 200.f;
-	
-	bool bInAttackRange = false;
-
-
-
-	void TurnOffAimCooldown();
+    //Set cooldown false
+    void TurnOffAimCooldown();
 
 public:
+    //Max FOV can be at max speed
+    UPROPERTY(EditAnywhere, Category="Camera")
+    float MaxSpeedFOV = 120.f;
+    //How fast the FOV zooms
+    UPROPERTY(EditAnywhere, Category="Camera")
+    float FOVZoomSpeed = 10.f;
 
-	UPROPERTY(EditAnywhere, Category="Camera")
-	float MaxSpeedFOV = 120.f;
+    //Returns skill check progress
+    UFUNCTION(BlueprintPure, Category="Combat")
+    float GetSkillCheckProgress();
+    
+    USkeletalMeshComponent* GetFirstPersonMesh() const { return FirstPersonMesh; }
+    UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
-	UPROPERTY(EditAnywhere, Category="Camera")
-	float FOVZoomSpeed = 10.f;
+    //Is the player aiming
+    bool bIsAiming = false;
+    //Aiming time
+    float CurrentAimTime = 0.0f;
 
-	UFUNCTION(BlueprintPure, Category="Combat")
-	float GetSkillCheckProgress();
-	
-	/** Returns the first person mesh **/
-	USkeletalMeshComponent* GetFirstPersonMesh() const { return FirstPersonMesh; }
+    //How long can you aim till it starts draining speed
+    UPROPERTY(EditAnywhere, Category= "Aiming")
+    float MaxSafeAimTime = 2.0f;
+    //How fast does aiming drain speed
+    UPROPERTY(EditAnywhere, Category="Aiming")
+    float SpeedDrainRate = 1.f;
 
-	/** Returns first person camera component **/
-	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+    //Is the cooldown on or off
+    bool bAimCooldown = false;
 
-	bool bIsAiming = false;
-
-	float CurrentAimTime = 0.0f;
-
-	UPROPERTY(EditAnywhere, Category= "Aiming")
-	float MaxSafeAimTime = 2.0f;
-
-	UPROPERTY(EditAnywhere, Category="Aiming")
-	float SpeedDrainRate = 1.f;
-
-	bool bAimCooldown = false;
-
-	UPROPERTY(EditAnywhere, Category="Combat")
-	float AimCooldownLength = 1.f;
-
-	float CurrentCooldownTime = 0.0f;
-
-	FTimerHandle AimCooldownTimerHandle;
-	
+    //How long till the player can aim again
+    UPROPERTY(EditAnywhere, Category="Combat")
+    float AimCooldownLength = 1.f;
+    
+    float CurrentCooldownTime = 0.0f;
 };
-
-
-
-
-

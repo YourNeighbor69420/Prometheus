@@ -15,16 +15,13 @@ UMarkableComponent::UMarkableComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
+	// Create and hide the UI widget used for marking 
 	MarkWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("MarkWidget"));
 	MarkWidget->SetupAttachment(this);
 
 	MarkWidget->SetVisibility(false);
 	MarkWidget->SetCachedMaxDrawDistance(true);
 	MarkWidget->SetWidgetSpace(EWidgetSpace::Screen);
-
-	
-	
-	
 	// ...
 }
 
@@ -34,12 +31,14 @@ void UMarkableComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//Reset health
 	Health = MaxHealth;
 	DamageThreshold = Health / 2;
 	// ...
 
 	MarkWidget->AttachToComponent(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 
+	// Spawn the Niagara particle system and hide it
 	if (ExecutableEffectSystem)
 	{
 		ExecutableEffectComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(ExecutableEffectSystem, this, NAME_None, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget, false);
@@ -64,6 +63,8 @@ void UMarkableComponent::OnMarked_Implementation()
 	IMarkingInterface::OnMarked_Implementation();
 
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, "Marked Component");
+	
+	//Reveals widget
 	MarkWidget->SetVisibility(true, true);
 }
 
@@ -71,6 +72,8 @@ void UMarkableComponent::OnUnMarked_Implementation()
 {
 	IMarkingInterface::OnUnMarked_Implementation();
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Emerald, "UnMarked Component");
+
+	//Hides widget
 	MarkWidget->SetVisibility(false, true);
 
 
@@ -81,21 +84,23 @@ void UMarkableComponent::DealDamage_Implementation(float damage)
 	IMarkingInterface::DealDamage_Implementation(damage);
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("damage dealt: %f"), damage));
 	
+	// Apply damage and clamp health so it doesn't drop below 0
 	Health -= damage;
 	Health = FMath::Clamp(Health, 0, MaxHealth);
-	
-	MarkWidget->SetVisibility(false, true);
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("enemy health: %f / %f"), Health, MaxHealth));
 
-	
+	//Hide widget
+	MarkWidget->SetVisibility(false, true);
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("enemy health: %f / %f"), Health, MaxHealth));
+
+	// Check if this body part has been completely destroyed
 	if (Health == 0.f)
 	{
 		Deactivate();
-		
+
+		// Tell the object pool to reclaim the entire enemy pawn
 		UEnemyPoolSubsystem* EnemyPoolSubsystem = GetWorld()->GetSubsystem<UEnemyPoolSubsystem>();
 		if (EnemyPoolSubsystem)
 		{
-			
 			AActor* OwnerActor = GetOwner();
 			AEnemyPawn* EnemyPawn = Cast<AEnemyPawn>(OwnerActor);
 			EnemyPoolSubsystem->ReturnEnemy(EnemyPawn);
@@ -155,6 +160,7 @@ void UMarkableComponent::ResetHealth_Implementation()
 
 void UMarkableComponent::SetExecutableEffectActive(bool bIsEffectActive)
 {
+	// Toggles the Niagara particle system 
 	if (ExecutableEffectComponent)
 	{
 		if (bIsEffectActive && !ExecutableEffectComponent->IsActive())
@@ -172,6 +178,7 @@ void UMarkableComponent::Deactivate()
 {
 	Super::Deactivate();
 
+	// Turn off physics/collision and turn off VFX
 	SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	ExecutableEffectComponent->Deactivate();
 	
@@ -179,6 +186,7 @@ void UMarkableComponent::Deactivate()
 
 void UMarkableComponent::Activate()
 {
+	//Turn on collision
 	SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
 }

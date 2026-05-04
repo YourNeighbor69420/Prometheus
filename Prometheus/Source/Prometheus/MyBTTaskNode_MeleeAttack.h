@@ -28,6 +28,7 @@ protected:
 	UPROPERTY(EditAnywhere, category = "Combat")
 	float AttackDuration = 1.5f;
 
+	//Timer to handle attack duration
 	FTimerHandle AttackTimerHandle;
 
 };

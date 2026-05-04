@@ -20,17 +20,21 @@ public:
 
 	virtual void Deinitialize() override;
 
+	//Set the current target
 	UFUNCTION(BlueprintCallable)
 	void SetMarkedTarget(UMarkableComponent* NewMarkedTarget);
 
+	//Wipes current target
 	UFUNCTION(BlueprintCallable)
 	void ClearMarkedTarget();
 
+	//Returns the current marked target
 	UFUNCTION(BlueprintCallable)
 	UMarkableComponent* GetMarkedTarget() const;
 
 	
 	
 private:
+	//Weak object pointer used in order to avoid crashing if target is destroyed before its cleared
 	TWeakObjectPtr<UMarkableComponent> CurrentMarkedTarget;
 };

@@ -22,6 +22,7 @@ protected:
 
 	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
+	// How close the enemy needs to be to the target before stopping
 	UPROPERTY(EditAnywhere, Category = "Flight")
 	float AcceptableRadius = 100.f;
 };

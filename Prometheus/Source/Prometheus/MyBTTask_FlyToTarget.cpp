@@ -50,12 +50,14 @@ void UMyBTTask_FlyToTarget::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* N
 		FVector TargetLoc = TargetActor->GetActorLocation();
 		float Distance = FVector::Dist(PawnLoc, TargetLoc);
 
+		//If we are within the acceptable radius, stop flying and report success
 		if (Distance <= AcceptableRadius)
 		{
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			return;
 		}
 
+		//If not close enough, calculate the direction and move towards the target
 		FVector Direction = (TargetLoc - PawnLoc).GetSafeNormal();
 		Pawn->AddMovementInput(Direction,1.f);
 	}

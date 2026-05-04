@@ -10,7 +10,7 @@
 ADoors::ADoors()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	DoorsMesh=CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Door Mesh"));
 	RootComponent = DoorsMesh;
@@ -25,15 +25,17 @@ void ADoors::BeginPlay()
 {
 	Super::BeginPlay();
 
-
+	//Check is an arena is set as the door manager
 	if (DoorsManager)
 	{
+		//Listen for when the arena delegate is broadcasted to unlock the door
 		DoorsManager->OnArenaFinished.AddDynamic(this, &ADoors::UnlockDoor);
 	}
 }
 
 void ADoors::UnlockDoor()
 {
+	//Turn off collision and make it invisible
 	DoorsMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	DoorsMesh->SetVisibility(false);
 }
