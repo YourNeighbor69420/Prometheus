@@ -62,7 +62,6 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	float AttackDamage= 1.f;
-
 	
 	int AliveComponents = 1;
 	

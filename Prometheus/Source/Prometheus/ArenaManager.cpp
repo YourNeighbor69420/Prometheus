@@ -73,7 +73,7 @@ void AArenaManager::StartPhase()
 
 void AArenaManager::EndArena()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "arena dopne");
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "arena done");
 	OnArenaFinished.Broadcast();
 }
 

@@ -42,9 +42,10 @@ void UPlayerSubsystem::SetMarkedTarget(UMarkableComponent* NewMarkedTarget)
 
 void UPlayerSubsystem::ClearMarkedTarget()
 {
-	
+	CurrentMarkedTarget->SetVisibility(false, true);
 	CurrentMarkedTarget = nullptr;
-	//CurrentMarkedTarget->SetVisibility(false, true);
+	//CurrentMarkedTarget->Execute_OnUnMarked(this);
+	
 	
 }
 

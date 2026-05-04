@@ -77,7 +77,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ResetArena();
 
-	bool bPlayerAlive = true;
+	bool bPlayerAlive = false;
 
 	FTimerHandle PhaseTimerHandle;
 

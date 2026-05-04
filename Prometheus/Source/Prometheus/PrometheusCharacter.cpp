@@ -84,7 +84,8 @@ void APrometheusCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-
+	RespawnAtCheckpoint();
+	
 	if (SpeedBlurMaterial && FirstPersonCameraComponent)
 	{
 		SpeedBlurMaterialInstance = UMaterialInstanceDynamic::Create(SpeedBlurMaterial, this);
