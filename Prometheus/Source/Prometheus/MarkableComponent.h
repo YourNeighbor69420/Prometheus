@@ -52,8 +52,8 @@ public:
 	void Activate();
 
 	//Reference for the mark widget
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Visuals")
-	UWidgetComponent* MarkWidget;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Visuals", meta = (AllowPrivateAccess = "true"))
+	class UWidgetComponent* MarkWidget;
 
 	//How fast the widget spins
 	UPROPERTY(EditAnywhere, Category = "Visuals")

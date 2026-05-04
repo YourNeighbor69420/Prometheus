@@ -17,11 +17,15 @@ UMarkableComponent::UMarkableComponent()
 
 	// Create and hide the UI widget used for marking 
 	MarkWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("MarkWidget"));
-	MarkWidget->SetupAttachment(this);
 
+	MarkWidget->SetupAttachment(this);
+	
+	
 	MarkWidget->SetVisibility(false);
 	MarkWidget->SetCachedMaxDrawDistance(true);
 	MarkWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	
+	
 	// ...
 }
 
@@ -31,12 +35,23 @@ void UMarkableComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	
+	if (MarkWidget)
+	{
+		FAttachmentTransformRules AttachmentRules(
+			EAttachmentRule::SnapToTarget, 
+			EAttachmentRule::SnapToTarget, 
+			EAttachmentRule::KeepWorld,    
+			false);
+	
+		MarkWidget->AttachToComponent(this, AttachmentRules);
+	}
 	//Reset health
 	Health = MaxHealth;
 	DamageThreshold = Health / 2;
 	// ...
 
-	MarkWidget->AttachToComponent(this, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	
 
 	// Spawn the Niagara particle system and hide it
 	if (ExecutableEffectSystem)

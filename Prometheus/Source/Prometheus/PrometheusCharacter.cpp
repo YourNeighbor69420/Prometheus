@@ -348,7 +348,7 @@ void APrometheusCharacter::MoveInput(const FInputActionValue& Value)
 	// get the Vector2D move axis
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
-	MoveInputRight = MovementVector.X;
+	//MoveInputRight = MovementVector.X;
 	
 	// pass the axis values to the move input
 	//DoMove(MovementVector.X, MovementVector.Y);
