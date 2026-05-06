@@ -6,7 +6,7 @@
 #include "MarkingInterface.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
-
+#include "MarkWidgetComponent.h"
 #include "MarkableComponent.generated.h"
 
 class UNiagaraSystem;
@@ -52,8 +52,8 @@ public:
 	void Activate();
 
 	//Reference for the mark widget
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Visuals", meta = (AllowPrivateAccess = "true"))
-	class UWidgetComponent* MarkWidget;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Visuals", meta = (AllowPrivateAccess = "true"))
+	class UMarkWidgetComponent* MarkWidget;
 
 	//How fast the widget spins
 	UPROPERTY(EditAnywhere, Category = "Visuals")

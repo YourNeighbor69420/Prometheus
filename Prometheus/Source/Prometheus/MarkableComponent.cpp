@@ -16,11 +16,13 @@ UMarkableComponent::UMarkableComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 	// Create and hide the UI widget used for marking 
-	MarkWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("MarkWidget"));
+	MarkWidget = CreateDefaultSubobject<UMarkWidgetComponent>(TEXT("Marking Widget Reticle"));
 
-	MarkWidget->SetupAttachment(this);
-	
-	
+	if (MarkWidget)
+	{
+		MarkWidget->SetupAttachment(this);
+		
+	}
 	MarkWidget->SetVisibility(false);
 	MarkWidget->SetCachedMaxDrawDistance(true);
 	MarkWidget->SetWidgetSpace(EWidgetSpace::Screen);
@@ -36,7 +38,7 @@ void UMarkableComponent::BeginPlay()
 	Super::BeginPlay();
 
 	
-	if (MarkWidget)
+	/*if (MarkWidget)
 	{
 		FAttachmentTransformRules AttachmentRules(
 			EAttachmentRule::SnapToTarget, 
@@ -45,7 +47,7 @@ void UMarkableComponent::BeginPlay()
 			false);
 	
 		MarkWidget->AttachToComponent(this, AttachmentRules);
-	}
+	}*/
 	//Reset health
 	Health = MaxHealth;
 	DamageThreshold = Health / 2;

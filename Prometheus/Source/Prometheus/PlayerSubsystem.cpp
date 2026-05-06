@@ -46,8 +46,12 @@ void UPlayerSubsystem::SetMarkedTarget(UMarkableComponent* NewMarkedTarget)
 void UPlayerSubsystem::ClearMarkedTarget()
 {
 	// Clears out the current target completely and hides widgets
-	CurrentMarkedTarget->SetVisibility(false, true);
-	CurrentMarkedTarget = nullptr;
+	if (CurrentMarkedTarget.IsValid())
+	{
+		CurrentMarkedTarget->SetVisibility(false, true);
+		CurrentMarkedTarget = nullptr;
+	}
+	
 	//CurrentMarkedTarget->Execute_OnUnMarked(this);
 	
 	
