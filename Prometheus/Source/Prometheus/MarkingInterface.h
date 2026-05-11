@@ -28,30 +28,24 @@ public:
 	void OnMarked();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
 	void OnUnMarked();
-
+	
 	//Applies damage and checks component health
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
 	void DealDamage(float DamageAmount);
-
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
 	float GetHealth();
-
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
 	float GetMaxHealth();
-
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
 	void ResetHealth();
-
+	
 	//Gets the rewards and penalties applied to the player
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
 	float GetSpeedReward();
-
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
 	float GetExecuteSpeedReward();
-
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
 	float GetSpeedPenalty();
-
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Interaction")
 	float GetDamageThreshold();
 

@@ -27,9 +27,7 @@ AEnemyPawn* UEnemyPoolSubsystem::RequestEnemy(TSubclassOf<AEnemyPawn> EnemyClass
 		UWorld* World = GetWorld();
 		if (World)
 		{
-
 			Enemy = World->SpawnActor<AEnemyPawn>(EnemyClass, SpawnTransform, SpawnParameters);
-			
 		}
 	}
 	//Wake the enemy up and place them at the spawn point
